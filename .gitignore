@@ -1,0 +1,31 @@
+# --- Thư mục tạm & Cache của Unity ---
+/[L]ibrary/
+/[T]emp/
+/[O]bj/
+/[B]uild/
+/[B]uilds/
+/[L]ogs/
+/[M]emoryCaptures/
+
+# --- Cấu hình cá nhân người dùng ---
+/[U]serSettings/
+
+# --- File dự án IDE (Visual Studio, VS Code, Rider) ---
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.idb
+.vs/
+.vscode/
+.idea/
+
+# --- File hệ thống điều hành ---
+.DS_Store
+Thumbs.db

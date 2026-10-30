@@ -1,0 +1,30 @@
+[2026-10-30T16:25:41.600Z][INFO] Command-line: /home/kai/Unity/Hub/Editor/6000.6.7f1/Editor/Data/Resources/PackageManager/Server/UnityPackageManager server -s 18938 --ipc-path /tmp/Unity-Upm-18938.sock -l 2 --log-file '/home/kai/simulator game/Logs/upm.log'
+[2026-10-30T16:25:41.628Z][INFO] IPC server started (IPC path=/tmp/Unity-Upm-18938.sock).
+[2026-10-30T16:25:41.628Z][INFO] Hint: To connect to this UPM instance, launch Unity with the command-line parameter -upmIpcPath Upm-18938.
+[2026-10-30T16:25:43.473Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:25:43.549Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:25:43.777Z][INFO] project:list-packages --> 200 (304 ms)
+[2026-10-30T16:25:46.166Z][INFO] project:list-packages --> 200 (2617 ms)
+[2026-10-30T16:25:46.572Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:25:46.582Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-30T16:25:46.591Z][INFO] config:project:get-registries --> 200 (9 ms)
+[2026-10-30T16:25:46.691Z][INFO] project:list-packages --> 200 (119 ms)
+[2026-10-30T16:26:35.998Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:26:36.113Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:26:36.192Z][INFO] project:list-packages --> 200 (193 ms)
+[2026-10-30T16:26:36.276Z][INFO] project:list-packages --> 200 (163 ms)
+[2026-10-30T16:26:36.567Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-30T16:26:36.573Z][INFO] config:project:get-registries --> 200 (6 ms)
+[2026-10-30T16:26:40.371Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:26:40.962Z][INFO] project:list-packages --> 200 (591 ms)
+[2026-10-30T16:26:47.028Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-30T16:26:50.152Z][INFO] project:list-packages --> 200 (3124 ms)
