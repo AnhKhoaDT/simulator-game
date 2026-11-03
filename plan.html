@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Khởi Nghiệp — Kế hoạch phát triển game (10 giai đoạn)</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --surface: #1a2029;
+    --surface-2: #232c38;
+    --border: #2f3a47;
+    --text: #e6edf3;
+    --muted: #9aa7b4;
+    --accent: #ffb347;
+    --accent-2: #4ea1ff;
+    --green: #4caf7d;
+    --red: #e5704f;
+    --radius: 14px;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(1200px 600px at 20% -10%, #1b2430 0%, var(--bg) 55%);
+    color: var(--text);
+    line-height: 1.65;
+    padding: 0 0 80px;
+  }
+  header.hero {
+    padding: 56px 24px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,179,71,0.08), transparent);
+  }
+  .hero .badge {
+    display: inline-block;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(255,179,71,0.4);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .hero h1 { font-size: 42px; margin: 0 0 10px; letter-spacing: -0.5px; }
+  .hero p { color: var(--muted); max-width: 680px; margin: 0 auto; font-size: 17px; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin: 36px 0 12px;
+  }
+  .meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .meta-card h4 { margin: 0 0 4px; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .meta-card p { margin: 0; font-size: 15px; font-weight: 600; }
+
+  .callout {
+    background: rgba(229,112,79,0.08);
+    border: 1px solid rgba(229,112,79,0.4);
+    border-left: 3px solid var(--red);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin: 20px 0 8px;
+    font-size: 14.5px;
+    color: var(--text);
+  }
+  .callout code { font-family: var(--mono); font-size: 13px; background: #0c1116; border: 1px solid var(--border); padding: 1px 6px; border-radius: 6px; color: #ffd79a; }
+  .legend { display: flex; gap: 18px; flex-wrap: wrap; margin: 28px 0 8px; font-size: 14px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dot.core { background: var(--accent); }
+  .dot.feature { background: var(--accent-2); }
+  .dot.polish { background: var(--green); }
+
+  .phase {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  .phase-head {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 24px;
+    background: linear-gradient(90deg, var(--surface-2), transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .phase-num {
+    flex: 0 0 auto;
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: grid; place-items: center;
+    font-size: 22px; font-weight: 700;
+    background: rgba(255,179,71,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(255,179,71,0.35);
+  }
+  .phase-title { flex: 1; }
+  .phase-title h2 { margin: 0; font-size: 21px; }
+  .phase-title .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .tag {
+    font-size: 12px; font-weight: 600;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .tag.core { color: var(--accent); border-color: rgba(255,179,71,0.4); }
+  .tag.feature { color: var(--accent-2); border-color: rgba(78,161,255,0.4); }
+  .tag.polish { color: var(--green); border-color: rgba(76,175,125,0.4); }
+
+  .phase-body { padding: 8px 24px 22px; }
+  .phase-body h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin: 20px 0 8px; }
+  .phase-body ul { margin: 0; padding-left: 20px; }
+  .phase-body li { margin: 6px 0; }
+  .phase-body code {
+    font-family: var(--mono);
+    font-size: 13px;
+    background: #0c1116;
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 6px;
+    color: #ffd79a;
+  }
+  pre {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    background: #0c1116;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: var(--muted);
+    margin: 8px 0 0;
+  }
+  .goal {
+    background: rgba(78,161,255,0.07);
+    border-left: 3px solid var(--accent-2);
+    padding: 10px 14px;
+    border-radius: 0 8px 8px 0;
+    margin: 4px 0 6px;
+    font-size: 15px;
+  }
+  .done {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--green);
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .done b { color: var(--text); font-weight: 600; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 50px; }
+  footer code { font-family: var(--mono); }
+  a { color: var(--accent-2); }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="badge">Game Design Document</div>
+  <h1>🍻 Khởi Nghiệp</h1>
+  <p>Game mô phỏng kinh doanh 3D — bắt đầu với quán nhậu, mở rộng sang quán cafe và quán nước. Kế hoạch phát triển chia thành 10 giai đoạn, từ dựng khung đến phát hành.</p>
+</header>
+
+<div class="wrap">
+
+  <section class="meta-grid">
+    <div class="meta-card"><h4>Engine</h4><p>Unity + URP</p></div>
+    <div class="meta-card"><h4>Ngôn ngữ</h4><p>C#</p></div>
+    <div class="meta-card"><h4>Giao diện</h4><p>UI Toolkit (UXML + USS)</p></div>
+    <div class="meta-card"><h4>Nền tảng</h4><p>Mobile landscape → PC</p></div>
+    <div class="meta-card"><h4>Input</h4><p>Input System (touch + chuột)</p></div>
+    <div class="meta-card"><h4>Dữ liệu</h4><p>Offline-first, sẵn sàng server</p></div>
+    <div class="meta-card"><h4>Kiến trúc</h4><p>Feature-based + asmdef</p></div>
+    <div class="meta-card"><h4>Đồ họa</h4><p>Khối primitive → model sau</p></div>
+    <div class="meta-card"><h4>Đa ngôn ngữ</h4><p>Localization từ ngày đầu (vi + en)</p></div>
+  </section>
+
+  <div class="callout">
+    <b>⚠️ Quy ước bắt buộc trước khi code:</b> Agent phải đọc bộ steering trong
+    <code>.kiro/steering/</code> trước khi bắt đầu dự án — gồm
+    <code>00-game-dev-rules.md</code> (rule chung) và
+    <code>01-unity-best-practices.md</code> (best practice Unity). Mọi text hiển thị cho người chơi
+    <b>bắt buộc</b> đi qua hệ thống localization (String Table), không hardcode. Thêm chuỗi mới =
+    thêm key + bản dịch vi/en.
+  </div>
+
+  <div class="legend">
+    <span><i class="dot core"></i> Nền tảng &amp; hạ tầng</span>
+    <span><i class="dot feature"></i> Tính năng gameplay</span>
+    <span><i class="dot polish"></i> Hoàn thiện &amp; phát hành</span>
+  </div>
+
+  <!-- GIAI ĐOẠN 1 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">1</div>
+      <div class="phase-title">
+        <h2>Dựng khung dự án &amp; cấu hình nền tảng</h2>
+        <div class="sub">Móng nhà — làm đúng một lần, đỡ cực về sau</div>
+      </div>
+      <div class="tag core">Nền tảng</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Có cấu trúc thư mục sạch, chuẩn, dễ bảo trì; project cấu hình sẵn cho mobile landscape.</div>
+      <h3>Cấu trúc thư mục (feature-based)</h3>
+      <pre>Assets/
+  _Project/                      ← đồ của mình, tách khỏi asset bên thứ 3
+    Scripts/
+      Core/
+        SceneFlow/               ← SceneLoader, SceneNames
+        Bootstrap/               ← khởi động game
+      Features/
+        Splash/
+        MainMenu/
+        BarGame/                 ← quán nhậu (làm sau)
+      Data/                      ← IDataStore, LocalDataStore
+      Shared/                    ← helper, extension dùng chung
+    UI/
+      Splash/                    ← Splash.uxml + Splash.uss
+      MainMenu/                  ← MainMenu.uxml + MainMenu.uss
+      Shared/                    ← theme chung (biến màu, font)
+    Scenes/
+      Splash.unity
+      MainMenu.unity
+      BarGame.unity
+    Settings/                    ← config (ScriptableObject sau này)</pre>
+      <h3>Công việc</h3>
+      <ul>
+        <li>Tạo cây thư mục <code>_Project/</code> như trên.</li>
+        <li>Cấu hình <b>Player Settings</b>: khóa màn hình <b>Landscape Left + Right</b>, tắt Portrait.</li>
+        <li>Đặt <b>Company Name / Product Name</b> = "Khởi Nghiệp".</li>
+        <li>Thiết lập <b>Assembly Definitions (asmdef)</b> cho từng module: <code>Core</code>, <code>Features.Splash</code>, <code>Features.MainMenu</code>, <code>Data</code>... ép ranh giới phụ thuộc rõ ràng.</li>
+        <li>Quy ước <b>namespace</b>: <code>KhoiNghiep.Core</code>, <code>KhoiNghiep.Features.MainMenu</code>...</li>
+        <li>Xác nhận URP <code>Mobile_Renderer</code> được dùng mặc định cho build mobile.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Project mở không lỗi compile, thư mục gọn gàng, bật Play ở Editor chạy bình thường, orientation khóa ngang.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 2 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">2</div>
+      <div class="phase-title">
+        <h2>Splash Screen &amp; luồng chuyển màn</h2>
+        <div class="sub">Màn hình đầu tiên người chơi thấy</div>
+      </div>
+      <div class="tag core">Nền tảng</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Hiện logo game vài giây rồi tự chuyển sang Main Menu, qua một hệ thống chuyển scene tập trung.</div>
+      <h3>Công việc</h3>
+      <ul>
+        <li>Viết <code>SceneLoader</code> (Core/SceneFlow): một nơi duy nhất lo việc chuyển scene — giống router bên web.</li>
+        <li>Tạo <code>SceneNames</code>: hằng số tên scene, tránh gõ chuỗi tay dễ sai.</li>
+        <li>Thiết kế <b>Splash</b> bằng UI Toolkit: <code>Splash.uxml</code> (bố cục) + <code>Splash.uss</code> (style), hiện logo + tên game.</li>
+        <li>Script <code>SplashController</code>: chờ 2–3 giây (hoặc chờ load xong) → gọi <code>SceneLoader</code> sang <b>MainMenu</b>.</li>
+        <li>Phân biệt rõ với Unity splash (logo "Made with Unity") — cái đó của engine, cái này là của game.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Bật Play từ scene Splash → thấy logo → tự nhảy sang Main Menu.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 3 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">3</div>
+      <div class="phase-title">
+        <h2>Main Menu &amp; chọn loại quán</h2>
+        <div class="sub">Trang chủ — nơi chọn trò chơi</div>
+      </div>
+      <div class="tag core">Nền tảng</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Trang chủ hiển thị tên game + 3 nút chọn quán. Bấm "Quán Nhậu" vào màn chơi; 2 loại còn lại tạm khóa.</div>
+      <h3>Công việc</h3>
+      <ul>
+        <li><code>MainMenu.uxml</code> + <code>MainMenu.uss</code>: tiêu đề "Khởi Nghiệp" + 3 nút: <b>Quán Nhậu</b> (mở), <b>Quán Cafe</b> (khóa 🔒), <b>Quán Nước</b> (khóa 🔒).</li>
+        <li><code>MainMenuController</code>: xử lý sự kiện click nút, gọi <code>SceneLoader</code> sang <b>BarGame</b>.</li>
+        <li>Thiết kế để <b>dễ thêm loại quán mới</b> sau này (danh sách quán dạng dữ liệu, không hardcode).</li>
+        <li>Thêm nút <b>Thoát</b> (PC), nút <b>Cài đặt</b> (placeholder) và <b>nút đổi ngôn ngữ</b> (vi/en).</li>
+      </ul>
+      <h3>Responsive, Safe Area &amp; Input (gộp chung)</h3>
+      <ul>
+        <li>UI Toolkit dùng đơn vị <b>%</b> và <b>flexbox</b> (giống web) để co giãn tự động trên mọi tỉ lệ màn hình.</li>
+        <li>Xử lý <b>Safe Area</b>: chừa viền tai thỏ, góc bo trên điện thoại.</li>
+        <li>Tạo <b>theme USS dùng chung</b> (Shared): biến màu, font, khoảng cách — đổi một chỗ, cả game đổi theo.</li>
+        <li>Thiết lập <b>Input System</b>: gộp touch + mouse thành "pointer" chung, viết một lần chạy cả hai.</li>
+        <li>Test nhanh ở nhiều tỉ lệ trong Game View (16:9, 19.5:9, 4:3 iPad).</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Splash → Menu → bấm Quán Nhậu → sang scene BarGame (tạm trống); 2 nút kia khóa; UI hiển thị đúng ở nhiều tỉ lệ; chạm và click đều chạy.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 4 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">4</div>
+      <div class="phase-title">
+        <h2>Hệ thống đa ngôn ngữ (Localization)</h2>
+        <div class="sub">Làm sớm để mọi text sau này đều đi qua hệ thống này</div>
+      </div>
+      <div class="tag core">Nền tảng</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Dựng hệ thống dịch đa ngôn ngữ bằng Unity Localization. Từ đây, MỌI chuỗi hiển thị cho người chơi đều lấy từ String Table — không hardcode chữ trong code hay UXML.</div>
+      <h3>Cách hoạt động</h3>
+      <pre>String Table (key → giá trị theo từng ngôn ngữ)
+  menu_title   | vi: "Khởi Nghiệp"     | en: "Startup"
+  btn_start    | vi: "Bắt đầu"          | en: "Start"
+  hud_money    | vi: "Tiền: {0}"        | en: "Money: {0}"   ← Smart String
+        │
+   LocalizedString  ← UI/code tham chiếu bằng KEY, tự đổi khi đổi ngôn ngữ</pre>
+      <h3>Công việc</h3>
+      <ul>
+        <li>Cài package <b><code>com.unity.localization</code></b>.</li>
+        <li>Tạo <b>Locales</b>: <b>Tiếng Việt (vi)</b> mặc định + <b>English (en)</b>.</li>
+        <li>Tạo <b>String Tables</b> theo nhóm key: <code>common_</code>, <code>splash_</code>, <code>menu_</code>, <code>bargame_</code>, <code>hud_</code>, <code>shop_</code>.</li>
+        <li>Chuyển hết text của Splash + Main Menu (đã làm) sang dùng <code>LocalizedString</code> theo key.</li>
+        <li>Dùng <b>Smart String</b> cho chuỗi có biến (tiền, số lượng, số nhiều) — không nối chuỗi thủ công.</li>
+        <li>Nút <b>đổi ngôn ngữ</b> đổi locale lúc đang chạy, UI tự cập nhật (không cần khởi động lại).</li>
+        <li>Chọn font bao phủ ký tự của các ngôn ngữ hỗ trợ.</li>
+        <li>Cấu trúc để <b>thêm ngôn ngữ mới = thêm một cột</b>, không sửa code.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Bấm nút đổi ngôn ngữ ở Menu → toàn bộ chữ đổi vi ↔ en ngay lập tức. Không còn chuỗi hardcode nào trong Splash/Menu.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 5 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">5</div>
+      <div class="phase-title">
+        <h2>Màn chơi quán nhậu — bối cảnh &amp; camera</h2>
+        <div class="sub">Dựng sân khấu cho gameplay</div>
+      </div>
+      <div class="tag feature">Gameplay</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Scene BarGame có sàn nhà, vài cái bàn, camera góc tycoon, ánh sáng — tất cả bằng khối primitive.</div>
+      <h3>Công việc</h3>
+      <ul>
+        <li>Dựng <b>sàn nhà</b> + tường đơn giản (khối hộp).</li>
+        <li>Đặt <b>3–4 cái bàn</b>: mỗi bàn = mặt bàn + 4 chân + chỗ ngồi (prefab <code>Table</code>).</li>
+        <li><b>Camera</b> góc nhìn chéo từ trên xuống (tycoon), cố định hoặc kéo nhẹ.</li>
+        <li>Ánh sáng cơ bản (Directional Light) hợp URP mobile.</li>
+        <li>Prefab hóa bàn để dễ nhân bản và sau này thay bằng model đẹp.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Vào BarGame thấy một không gian quán 3D với bàn ghế, camera nhìn bao quát.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 6 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">6</div>
+      <div class="phase-title">
+        <h2>Khách hàng — vòng đời &amp; di chuyển</h2>
+        <div class="sub">Trái tim của game mô phỏng</div>
+      </div>
+      <div class="tag feature">Gameplay</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Khách tự xuất hiện ở cửa, tìm bàn trống, đi tới ngồi, chờ được phục vụ, rồi rời đi.</div>
+      <h3>Máy trạng thái khách (state machine)</h3>
+      <pre>Vào cửa → Tìm bàn trống → Đi tới bàn → Ngồi/Gọi món
+   → Chờ phục vụ → Ăn/uống → Trả tiền → Rời đi</pre>
+      <h3>Công việc</h3>
+      <ul>
+        <li><code>CustomerSpawner</code>: sinh khách theo thời gian (capsule + cầu làm đầu).</li>
+        <li><code>Customer</code> state machine: quản lý từng trạng thái ở trên.</li>
+        <li>Di chuyển khách tới bàn (NavMesh hoặc di chuyển đơn giản theo điểm).</li>
+        <li><code>Table</code>: biết trống/đang có khách; khách không giành cùng một bàn.</li>
+        <li>Nếu hết bàn → khách chờ hoặc bỏ đi (ảnh hưởng điểm sau này).</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Bật Play thấy khách tự vào, tự ngồi vào bàn trống, chờ một lúc rồi rời đi.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 7 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">7</div>
+      <div class="phase-title">
+        <h2>Gọi món, phục vụ &amp; kiếm tiền</h2>
+        <div class="sub">Vòng lặp cốt lõi: phục vụ → nhận tiền</div>
+      </div>
+      <div class="tag feature">Gameplay</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Khách gọi món, hiện yêu cầu trên đầu; người chơi click để phục vụ; phục vụ xong khách trả tiền.</div>
+      <h3>Công việc</h3>
+      <ul>
+        <li><code>OrderSystem</code>: khách gọi 1 món (bia, mồi nhậu...), hiện icon "!" / bong bóng trên đầu.</li>
+        <li><b>Click chuột / chạm</b> vào khách để phục vụ (dùng pointer chung từ Giai đoạn 4).</li>
+        <li>Phục vụ xong → khách ăn/uống trong vài giây → <b>trả tiền</b>.</li>
+        <li><code>EconomyManager</code>: cộng tiền, theo dõi tổng doanh thu.</li>
+        <li>Khách chờ quá lâu → mất kiên nhẫn → bỏ đi, không trả tiền (tạo áp lực gameplay).</li>
+        <li>🌐 Tên món và mọi text hiển thị dùng <b>key localization</b> (<code>bargame_</code>), không hardcode.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Vòng lặp hoàn chỉnh: khách vào → gọi món → click phục vụ → nhận tiền → tiền tăng trên UI.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 8 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">8</div>
+      <div class="phase-title">
+        <h2>HUD trong game, tiền &amp; lưu dữ liệu offline</h2>
+        <div class="sub">Hiển thị thông tin &amp; giữ tiến trình</div>
+      </div>
+      <div class="tag feature">Gameplay</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> HUD hiển thị tiền, số khách, thời gian; dữ liệu game lưu được trên máy và nạp lại khi mở lại.</div>
+      <h3>Lớp dữ liệu (sẵn sàng cho server)</h3>
+      <pre>IDataStore            ← hợp đồng lưu/đọc dữ liệu
+   ├── LocalDataStore    ← bây giờ: lưu file JSON trên máy
+   └── ServerDataStore   ← sau này: gọi API server (chưa làm)</pre>
+      <h3>Công việc</h3>
+      <ul>
+        <li><b>HUD</b> (UI Toolkit): hiển thị tiền, số khách đã phục vụ, nút Pause.</li>
+        <li>Menu <b>Pause</b>: Tiếp tục / Về trang chủ.</li>
+        <li><code>IDataStore</code> + <code>LocalDataStore</code>: lưu tiền và tiến trình ra JSON trên máy.</li>
+        <li>Gameplay chỉ nói chuyện với <code>IDataStore</code> — sau đổi sang server chỉ thay phần ruột.</li>
+        <li>Tự lưu khi thoát, tự nạp khi vào lại.</li>
+        <li>🌐 Mọi nhãn HUD và menu Pause dùng <b>key localization</b> (<code>hud_</code>, <code>common_</code>) + Smart String cho số tiền.</li>
+        <li>Lưu luôn <b>ngôn ngữ đã chọn</b> vào dữ liệu để lần sau mở lại giữ nguyên.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Chơi, kiếm tiền, thoát ra, mở lại → tiền, tiến trình và ngôn ngữ vẫn còn.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 9 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">9</div>
+      <div class="phase-title">
+        <h2>Chiều sâu: nâng cấp, nhân viên, nguyên liệu</h2>
+        <div class="sub">Biến prototype thành game thực thụ</div>
+      </div>
+      <div class="tag feature">Gameplay</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Thêm hệ thống phát triển để người chơi có mục tiêu dài hạn và lý do chơi tiếp.</div>
+      <h3>Công việc (chọn làm dần)</h3>
+      <ul>
+        <li><b>Nâng cấp quán</b>: mua thêm bàn, mở rộng không gian.</li>
+        <li><b>Thuê nhân viên</b>: bồi bàn tự phục vụ, đầu bếp làm món nhanh hơn.</li>
+        <li><b>Nguyên liệu / menu</b>: mua nguyên liệu, thêm nhiều món với giá khác nhau.</li>
+        <li><b>Tiến trình theo cấp</b>: mở khóa Quán Cafe / Quán Nước khi đạt mốc tiền.</li>
+        <li>Cân bằng kinh tế (giá món, lương nhân viên, tốc độ khách) — để trong ScriptableObject để chỉnh không cần sửa code.</li>
+        <li>🌐 Tên nâng cấp, nhân viên, nguyên liệu dùng <b>key localization</b> (<code>shop_</code>), không hardcode.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Người chơi có thể tái đầu tư tiền để quán lớn dần, mở khóa loại quán mới.</span></div>
+    </div>
+  </article>
+
+  <!-- GIAI ĐOẠN 10 -->
+  <article class="phase">
+    <div class="phase-head">
+      <div class="phase-num">10</div>
+      <div class="phase-title">
+        <h2>Đồ họa, âm thanh, build &amp; phát hành</h2>
+        <div class="sub">Hoàn thiện &amp; đưa lên điện thoại</div>
+      </div>
+      <div class="tag polish">Hoàn thiện</div>
+    </div>
+    <div class="phase-body">
+      <div class="goal"><b>Mục tiêu:</b> Thay khối hộp bằng model đẹp, thêm âm thanh, tối ưu hiệu năng, build ra Android để chơi thật.</div>
+      <h3>Công việc</h3>
+      <ul>
+        <li><b>Thay model</b>: tải model miễn phí (Kenney.nl, Asset Store, Poly Pizza) hoặc tự làm bằng Blender — thay vào chỗ khối hộp, <b>không phải sửa code logic</b>.</li>
+        <li><b>Âm thanh</b>: nhạc nền, tiếng click, tiếng khách, tiếng nhận tiền.</li>
+        <li><b>Hiệu ứng</b>: animation khách, particle khi nhận tiền.</li>
+        <li><b>Tối ưu mobile</b>: kiểm tra FPS, giảm draw call, nén texture.</li>
+        <li><b>Build Android (.apk)</b>: test cảm giác chạm, hiệu năng trên máy thật.</li>
+        <li>🌐 <b>Rà soát localization</b>: kiểm tra không còn chuỗi hardcode, font hiển thị đủ ký tự mọi ngôn ngữ, bố cục không vỡ khi chữ dài hơn (en thường dài hơn vi). Cân nhắc thêm ngôn ngữ mới.</li>
+        <li>(Tùy chọn) Thêm <b>server</b>: viết <code>ServerDataStore</code> + backend cho đăng nhập, lưu cloud, xếp hạng.</li>
+      </ul>
+      <div class="done">✅ <span><b>Hoàn thành khi:</b> Có file .apk cài được lên điện thoại, chơi mượt, nhìn chỉn chu hơn bản prototype, đổi ngôn ngữ chạy đúng không vỡ layout.</span></div>
+    </div>
+  </article>
+
+  <footer>
+    <p>📄 Tài liệu kế hoạch — Game <b>Khởi Nghiệp</b> · Unity + C# + UI Toolkit · đa ngôn ngữ (vi + en)</p>
+    <p>Làm tuần tự từ Giai đoạn 1. Mỗi giai đoạn chạy được rồi mới sang giai đoạn sau.</p>
+    <p>Trước khi code: đọc <code>.kiro/steering/00-game-dev-rules.md</code> và <code>01-unity-best-practices.md</code>.</p>
+  </footer>
+
+</div>
+</body>
+</html>
