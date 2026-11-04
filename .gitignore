@@ -25,6 +25,7 @@
 .vs/
 .vscode/
 .idea/
+.agents
 
 # --- File hệ thống điều hành ---
 .DS_Store
