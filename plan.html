@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Khởi Nghiệp — Kế hoạch phát triển game (10 giai đoạn)</title>
+<title>Startup — Kế hoạch phát triển game (10 giai đoạn)</title>
 <style>
   :root {
     --bg: #0f1419;
@@ -167,7 +167,7 @@
 <body>
 <header class="hero">
   <div class="badge">Game Design Document</div>
-  <h1>🍻 Khởi Nghiệp</h1>
+  <h1>🍻 Startup</h1>
   <p>Game mô phỏng kinh doanh 3D — bắt đầu với quán nhậu, mở rộng sang quán cafe và quán nước. Kế hoạch phát triển chia thành 10 giai đoạn, từ dựng khung đến phát hành.</p>
 </header>
 
@@ -238,9 +238,9 @@
       <ul>
         <li>Tạo cây thư mục <code>_Project/</code> như trên.</li>
         <li>Cấu hình <b>Player Settings</b>: khóa màn hình <b>Landscape Left + Right</b>, tắt Portrait.</li>
-        <li>Đặt <b>Company Name / Product Name</b> = "Khởi Nghiệp".</li>
+        <li>Đặt <b>Company Name / Product Name</b> = "Startup".</li>
         <li>Thiết lập <b>Assembly Definitions (asmdef)</b> cho từng module: <code>Core</code>, <code>Features.Splash</code>, <code>Features.MainMenu</code>, <code>Data</code>... ép ranh giới phụ thuộc rõ ràng.</li>
-        <li>Quy ước <b>namespace</b>: <code>KhoiNghiep.Core</code>, <code>KhoiNghiep.Features.MainMenu</code>...</li>
+        <li>Quy ước <b>namespace</b>: <code>Startup.Core</code>, <code>Startup.Features.MainMenu</code>...</li>
         <li>Xác nhận URP <code>Mobile_Renderer</code> được dùng mặc định cho build mobile.</li>
       </ul>
       <div class="done">✅ <span><b>Hoàn thành khi:</b> Project mở không lỗi compile, thư mục gọn gàng, bật Play ở Editor chạy bình thường, orientation khóa ngang.</span></div>
@@ -285,7 +285,7 @@
       <div class="goal"><b>Mục tiêu:</b> Trang chủ hiển thị tên game + 3 nút chọn quán. Bấm "Quán Nhậu" vào màn chơi; 2 loại còn lại tạm khóa.</div>
       <h3>Công việc</h3>
       <ul>
-        <li><code>MainMenu.uxml</code> + <code>MainMenu.uss</code>: tiêu đề "Khởi Nghiệp" + 3 nút: <b>Quán Nhậu</b> (mở), <b>Quán Cafe</b> (khóa 🔒), <b>Quán Nước</b> (khóa 🔒).</li>
+        <li><code>MainMenu.uxml</code> + <code>MainMenu.uss</code>: tiêu đề "Startup" + 3 nút: <b>Quán Nhậu</b> (mở), <b>Quán Cafe</b> (khóa 🔒), <b>Quán Nước</b> (khóa 🔒).</li>
         <li><code>MainMenuController</code>: xử lý sự kiện click nút, gọi <code>SceneLoader</code> sang <b>BarGame</b>.</li>
         <li>Thiết kế để <b>dễ thêm loại quán mới</b> sau này (danh sách quán dạng dữ liệu, không hardcode).</li>
         <li>Thêm nút <b>Thoát</b> (PC), nút <b>Cài đặt</b> (placeholder) và <b>nút đổi ngôn ngữ</b> (vi/en).</li>
@@ -316,7 +316,7 @@
       <div class="goal"><b>Mục tiêu:</b> Dựng hệ thống dịch đa ngôn ngữ bằng Unity Localization. Từ đây, MỌI chuỗi hiển thị cho người chơi đều lấy từ String Table — không hardcode chữ trong code hay UXML.</div>
       <h3>Cách hoạt động</h3>
       <pre>String Table (key → giá trị theo từng ngôn ngữ)
-  menu_title   | vi: "Khởi Nghiệp"     | en: "Startup"
+  menu_title   | vi: "Startup"         | en: "Startup"
   btn_start    | vi: "Bắt đầu"          | en: "Start"
   hud_money    | vi: "Tiền: {0}"        | en: "Money: {0}"   ← Smart String
         │
@@ -494,7 +494,7 @@
   </article>
 
   <footer>
-    <p>📄 Tài liệu kế hoạch — Game <b>Khởi Nghiệp</b> · Unity + C# + UI Toolkit · đa ngôn ngữ (vi + en)</p>
+    <p>📄 Tài liệu kế hoạch — Game <b>Startup</b> · Unity + C# + UI Toolkit · đa ngôn ngữ (vi + en)</p>
     <p>Làm tuần tự từ Giai đoạn 1. Mỗi giai đoạn chạy được rồi mới sang giai đoạn sau.</p>
     <p>Trước khi code: đọc <code>.kiro/steering/00-game-dev-rules.md</code> và <code>01-unity-best-practices.md</code>.</p>
   </footer>

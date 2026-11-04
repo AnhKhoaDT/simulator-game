@@ -1,7 +1,7 @@
-# Khởi Nghiệp — Game Development Rules
+# Startup — Game Development Rules
 
 > READ THIS FIRST. These rules apply to every piece of work on this project.
-> This is a Unity 3D business-simulation game ("Khởi Nghiệp"). First mode: bar/pub tycoon.
+> This is a Unity 3D business-simulation game ("Startup"). First mode: bar/pub tycoon.
 
 ## Project facts (do not re-ask)
 
@@ -40,8 +40,8 @@
 
 ## Namespaces
 
-- Root namespace: `KhoiNghiep`.
-- Match folders: `KhoiNghiep.Core.SceneFlow`, `KhoiNghiep.Features.MainMenu`, `KhoiNghiep.Data`, `KhoiNghiep.Shared`, etc.
+- Root namespace: `Startup`.
+- Match folders: `Startup.Core.SceneFlow`, `Startup.Features.MainMenu`, `Startup.Data`, `Startup.Shared`, etc.
 
 ## Localization rules (CRITICAL — enforce on every change)
 

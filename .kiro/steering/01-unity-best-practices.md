@@ -1,4 +1,4 @@
-# Unity Best Practices — Khởi Nghiệp
+# Unity Best Practices — Startup
 
 > Companion to 00-game-dev-rules. Concrete Unity patterns to apply when writing code.
 > Sourced asmdeffrom Unity's official architecture & naming guides and the Localization docs.

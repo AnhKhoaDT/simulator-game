@@ -1,0 +1,14 @@
+{
+    "name": "Startup.Shared",
+    "rootNamespace": "Startup.Shared",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "autoReferenced": true,
+    "noEngineReferences": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "precompiledReferences": []
+}
