@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="Startup.Core.csproj" />
+  <Project Path="Startup.Features.MainMenu.csproj" />
+  <Project Path="Startup.Data.csproj" />
+  <Project Path="Startup.Features.Splash.csproj" />
+</Solution>

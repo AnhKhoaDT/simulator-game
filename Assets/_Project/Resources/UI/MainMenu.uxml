@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/MainMenu/MainMenu.uss" />
+    <ui:VisualElement name="menu-root" class="menu-root">
+        <ui:Label name="title" text="Startup" class="menu-title" />
+        <ui:Label name="subtitle" text="Chon loai quan" class="menu-subtitle" />
+
+        <ui:VisualElement name="venue-list" class="venue-list" />
+
+        <ui:VisualElement name="footer-bar" class="footer-bar">
+            <ui:Button name="btn-language" text="EN / VI" class="footer-btn" />
+            <ui:Button name="btn-settings" text="Cai dat" class="footer-btn" />
+            <ui:Button name="btn-quit" text="Thoat" class="footer-btn" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

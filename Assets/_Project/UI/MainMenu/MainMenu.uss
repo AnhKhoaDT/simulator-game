@@ -1,0 +1,75 @@
+/* Main menu layout & style. Responsive via flex + percentage width. */
+@import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+
+.menu-root {
+    flex-grow: 1;
+    background-color: var(--color-bg);
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-l);
+}
+
+.menu-title {
+    font-size: var(--font-title);
+    color: var(--color-text);
+    -unity-font-style: bold;
+    margin-bottom: var(--space-s);
+}
+
+.menu-subtitle {
+    font-size: var(--font-body);
+    color: var(--color-muted);
+    margin-bottom: var(--space-l);
+}
+
+.venue-list {
+    width: 60%;
+    max-width: 520px;
+    align-items: stretch;
+}
+
+.venue-btn {
+    height: 64px;
+    margin-bottom: var(--space-m);
+    border-radius: 12px;
+    border-width: 0;
+    font-size: var(--font-body);
+    -unity-font-style: bold;
+    background-color: var(--color-accent);
+    color: rgb(30, 22, 10);
+}
+
+.venue-btn:hover {
+    background-color: rgb(255, 196, 110);
+}
+
+.venue-btn--locked {
+    background-color: var(--color-surface);
+    color: var(--color-muted);
+}
+
+.venue-btn--locked:hover {
+    background-color: var(--color-surface);
+}
+
+.footer-bar {
+    flex-direction: row;
+    justify-content: center;
+    margin-top: var(--space-l);
+}
+
+.footer-btn {
+    height: 40px;
+    min-width: 100px;
+    margin-left: var(--space-s);
+    margin-right: var(--space-s);
+    border-radius: 10px;
+    border-width: 0;
+    font-size: var(--font-small);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+}
+
+.footer-btn:hover {
+    background-color: var(--color-accent-2);
+}
