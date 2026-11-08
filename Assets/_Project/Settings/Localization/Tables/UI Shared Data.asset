@@ -151,6 +151,102 @@ MonoBehaviour:
     m_Key: bargame_unlocked
     m_Metadata:
       m_Items: []
+  - m_Id: 301432564297728
+    m_Key: hud_status_open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269248
+    m_Key: hud_status_closed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269249
+    m_Key: hud_btn_open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269250
+    m_Key: hud_btn_close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115118837760
+    m_Key: hud_hint_pc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115148197888
+    m_Key: hud_hint_touch
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960795156480
+    m_Key: settings_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933696
+    m_Key: settings_owner_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933697
+    m_Key: settings_tutorial
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933698
+    m_Key: common_owner_default
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933699
+    m_Key: staff_waiter_default
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933700
+    m_Key: tut_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933701
+    m_Key: tut_controls_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933702
+    m_Key: tut_controls_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933703
+    m_Key: tut_shift_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933704
+    m_Key: tut_shift_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933705
+    m_Key: tut_serve_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933706
+    m_Key: tut_serve_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933707
+    m_Key: tut_cashier_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933708
+    m_Key: tut_cashier_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933709
+    m_Key: tut_shop_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933710
+    m_Key: tut_shop_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933711
+    m_Key: tut_view_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933712
+    m_Key: tut_view_body
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

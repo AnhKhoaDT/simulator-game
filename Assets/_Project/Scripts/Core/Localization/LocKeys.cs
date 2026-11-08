@@ -19,6 +19,34 @@ namespace Startup.Core.Localization
         public const string MenuBtnSettings = "menu_btn_settings";
         public const string MenuBtnQuit = "menu_btn_quit";
 
+        public const string HudStatusOpen = "hud_status_open";
+        public const string HudStatusClosed = "hud_status_closed";
+        public const string HudBtnOpen = "hud_btn_open";
+        public const string HudBtnClose = "hud_btn_close";
+
+        public const string SettingsTitle = "settings_title";
+        public const string SettingsOwnerName = "settings_owner_name";
+        public const string SettingsTutorial = "settings_tutorial";
+        public const string CommonOwnerDefault = "common_owner_default";
+        public const string StaffWaiterDefault = "staff_waiter_default";
+
+        public const string TutTitle = "tut_title";
+        public const string TutControlsTitle = "tut_controls_title";
+        public const string TutControlsBody = "tut_controls_body";
+        public const string TutShiftTitle = "tut_shift_title";
+        public const string TutShiftBody = "tut_shift_body";
+        public const string TutServeTitle = "tut_serve_title";
+        public const string TutServeBody = "tut_serve_body";
+        public const string TutCashierTitle = "tut_cashier_title";
+        public const string TutCashierBody = "tut_cashier_body";
+        public const string TutShopTitle = "tut_shop_title";
+        public const string TutShopBody = "tut_shop_body";
+        public const string TutViewTitle = "tut_view_title";
+        public const string TutViewBody = "tut_view_body";
+
+        public const string HudHintPc = "hud_hint_pc";
+        public const string HudHintTouch = "hud_hint_touch";
+
         public const string HudBtnShop = "hud_btn_shop";
         public const string ShopTitle = "shop_title";
         public const string ShopUpgradeTable = "shop_upgrade_table";

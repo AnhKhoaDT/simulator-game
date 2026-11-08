@@ -11,5 +11,7 @@ namespace Startup.Features.BarGame
         public int CustomersServed;
         public int TablesOwned;
         public int WaiterLevel;
+        // -1 = never saved, so the clock starts at its configured hour.
+        public int ClockMinutes = -1;
     }
 }

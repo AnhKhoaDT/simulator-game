@@ -2,67 +2,71 @@ using UnityEngine;
 
 namespace Startup.Features.BarGame
 {
-    // Builds a customer from the character model with a random skin, or primitives if the model is missing.
+    // Builds characters from the Blocky models (customers, passers-by, staff), or primitives if a model is missing.
     internal static class CustomerFactory
     {
         public const string ModelFolder = "Models/Characters/character-";
-        public const float ModelHeight = 1.25f;
+        // Real-world scale, because the player now looks through the owner's eyes.
+        public const float ModelHeight = 1.65f;
 
-        private const string ModelLetters = "abcde";
+        // Letters a..p are guests and passers-by; q is the waiter and r is the owner.
+        public const string GuestLetters = "abcdefghijklmnop";
+        public const char WaiterLetter = 'q';
+        public const char OwnerLetter = 'r';
+
         private const float ColliderRadius = 0.3f;
         private const float BodyHeight = 0.45f;
         private const float HeadHeight = 1.05f;
-        private const float BubbleHeight = 1.75f;
-        private const float BubbleSize = 0.55f;
-        private const float MarkZ = -0.28f;
+        private const float BubbleHeight = 2.2f;
+        // Ignore Raycast, so the third-person camera never collides with customers.
+        private const int CustomerLayer = 2;
 
         private static readonly Vector3 BodyScale = new Vector3(0.5f, 0.45f, 0.5f);
         private static readonly Vector3 HeadScale = new Vector3(0.35f, 0.35f, 0.35f);
         private static readonly Color SkinColor = new Color(0.95f, 0.8f, 0.65f);
-        private static readonly Color MarkColor = new Color(0.15f, 0.12f, 0.1f);
 
         private static int _created;
 
         public static Customer Create(Transform parent)
         {
-            var root = new GameObject("Customer");
+            var root = new GameObject("Customer") { layer = CustomerLayer };
             root.transform.SetParent(parent, false);
 
-            var animator = BuildModel(root, out var body);
-            var bubble = BuildBubble(root.transform, out var bubbleRenderer);
+            var letter = GuestLetters[_created++ % GuestLetters.Length];
+            var animator = BuildCharacter(root, letter, out var body);
+            AddCollider(root);
+            var bubble = CustomerBubble.Create(root.transform, BubbleHeight);
 
             var customer = root.AddComponent<Customer>();
-            customer.Initialize(body, bubble, bubbleRenderer, animator);
+            customer.Initialize(body, bubble, animator);
             return customer;
         }
 
-        // Shared with the waiter so both use the same model setup. Each model has its own baked-in texture.
-        public static CharacterAnimator SetupCharacter(GameObject root, GameObject visual, string modelPath)
+        public static char RandomGuestLetter()
         {
-            var characterAnimator = root.AddComponent<CharacterAnimator>();
-            characterAnimator.Initialize(ModelLoader.EnsureAnimator(visual), modelPath);
-            characterAnimator.PlayIdle();
-
-            // Measure after the clip is applied: clips may move or scale bones compared to the import pose.
-            characterAnimator.ApplyPoseNow();
-            ModelLoader.FitToHeight(visual, ModelHeight);
-            return characterAnimator;
+            return GuestLetters[Random.Range(0, GuestLetters.Length)];
         }
 
-        // Returns the animator when a model was used; otherwise builds primitives and returns null.
-        private static CharacterAnimator BuildModel(GameObject root, out Renderer body)
+        // Adds the character model under root. Returns its animator, or null (with a primitive body) if missing.
+        public static CharacterAnimator BuildCharacter(GameObject root, char letter, out Renderer primitiveBody)
         {
-            var path = ModelFolder + ModelLetters[_created++ % ModelLetters.Length];
+            var path = ModelFolder + letter;
             var visual = ModelLoader.Instantiate(path, root.transform, "Model");
             if (visual == null)
             {
-                body = BuildPrimitiveBody(root.transform);
+                primitiveBody = BuildPrimitiveBody(root.transform);
                 return null;
             }
 
-            AddClickCollider(root);
-            body = null;
-            return SetupCharacter(root, visual, path);
+            primitiveBody = null;
+            var animator = root.AddComponent<CharacterAnimator>();
+            animator.Initialize(ModelLoader.EnsureAnimator(visual), path);
+            animator.PlayIdle();
+
+            // Measure after the clip is applied: clips may move or scale bones compared to the import pose.
+            animator.ApplyPoseNow();
+            ModelLoader.FitToHeight(visual, ModelHeight);
+            return animator;
         }
 
         private static Renderer BuildPrimitiveBody(Transform parent)
@@ -74,37 +78,12 @@ namespace Startup.Features.BarGame
             return body.GetComponent<Renderer>();
         }
 
-        // Models have no collider, so add one for click and tap picking.
-        private static void AddClickCollider(GameObject root)
+        private static void AddCollider(GameObject root)
         {
             var collider = root.AddComponent<CapsuleCollider>();
             collider.radius = ColliderRadius;
             collider.height = ModelHeight;
             collider.center = new Vector3(0f, ModelHeight * 0.5f, 0f);
-        }
-
-        // Round bubble with a "!" on the camera-facing side; the sphere keeps its collider so it is clickable.
-        private static Transform BuildBubble(Transform parent, out Renderer bubbleRenderer)
-        {
-            var root = new GameObject("OrderBubble").transform;
-            root.SetParent(parent, false);
-            root.localPosition = new Vector3(0f, BubbleHeight, 0f);
-
-            var sphere = PrimitiveFactory.Shape(PrimitiveType.Sphere, "BubbleBody", root,
-                Vector3.zero, Vector3.one * BubbleSize, Color.white);
-            bubbleRenderer = sphere.GetComponent<Renderer>();
-
-            AddMark(root, "MarkBar", new Vector3(0f, 0.06f, MarkZ), new Vector3(0.08f, 0.22f, 0.06f));
-            AddMark(root, "MarkDot", new Vector3(0f, -0.14f, MarkZ), new Vector3(0.08f, 0.08f, 0.06f));
-
-            root.gameObject.SetActive(false);
-            return root;
-        }
-
-        private static void AddMark(Transform parent, string name, Vector3 position, Vector3 scale)
-        {
-            var mark = PrimitiveFactory.Box(name, parent, position, scale, MarkColor);
-            Object.Destroy(mark.GetComponent<Collider>());
         }
     }
 }

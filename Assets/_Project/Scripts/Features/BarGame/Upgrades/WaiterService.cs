@@ -12,8 +12,6 @@ namespace Startup.Features.BarGame
         private const float TurnSpeedDegrees = 540f;
         private const float MinLookSqrDistance = 0.0001f;
 
-        // Customers use a to e, so the waiter's look is always distinct.
-        private const string WaiterModelPath = CustomerFactory.ModelFolder + "f";
 
         private static readonly Vector3 BodyScale = new Vector3(0.5f, 0.45f, 0.5f);
         private static readonly Vector3 HeadScale = new Vector3(0.35f, 0.35f, 0.35f);
@@ -34,6 +32,9 @@ namespace Startup.Features.BarGame
         private BarUpgrades _upgrades;
         private Transform _figure;
         private CharacterAnimator _animator;
+
+        // The visible waiter; inactive until one is hired.
+        public Transform Figure => _figure;
         private Customer _target;
         private Vector3 _station;
         private float _walkSpeed;
@@ -96,14 +97,19 @@ namespace Startup.Features.BarGame
 
         private bool TryBuildModel(GameObject root)
         {
-            var visual = ModelLoader.Instantiate(WaiterModelPath, root.transform, "Model");
-            if (visual == null)
+            _animator = CustomerFactory.BuildCharacter(root, CustomerFactory.WaiterLetter, out var primitiveBody);
+            if (primitiveBody == null)
             {
-                return false;
+                return true;
             }
 
-            _animator = CustomerFactory.SetupCharacter(root, visual, WaiterModelPath);
-            return true;
+            // No model: drop the generic primitive and let the caller build the uniformed one.
+            foreach (Transform child in root.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            return false;
         }
 
         private void Walk()

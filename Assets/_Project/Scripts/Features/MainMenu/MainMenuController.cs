@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Startup.Core.Localization;
 using Startup.Core.SceneFlow;
+using Startup.Core.UI;
 using Startup.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,41 +13,51 @@ namespace Startup.Features.MainMenu
     public class MainMenuController : MonoBehaviour
     {
         private const string UxmlPath = "UI/MainMenu";
-        private const string PanelSettingsPath = "UI/MainPanelSettings";
         private const string VenuesPath = "Venues";
 
         private readonly LocalizedBindings _bindings = new LocalizedBindings();
         private Button _languageButton;
+        private Button _settingsButton;
+        private TutorialPanel _tutorial;
+        private SettingsPanel _settings;
 
         private void Start()
         {
-            var uxml = Resources.Load<VisualTreeAsset>(UxmlPath);
-            var panelSettings = Resources.Load<PanelSettings>(PanelSettingsPath);
-
-            if (uxml == null || panelSettings == null)
+            var root = UiDocuments.Create(gameObject, UxmlPath, out _);
+            if (root == null)
             {
-                Debug.LogError($"MainMenuController could not load UI from Resources ('{UxmlPath}', '{PanelSettingsPath}').");
                 return;
             }
 
-            var document = gameObject.AddComponent<UIDocument>();
-            document.panelSettings = panelSettings;
-            document.visualTreeAsset = uxml;
-
-            var root = document.rootVisualElement;
             LocalizationService.Initialize(new LanguagePreferenceStore(new LocalDataStore()));
             BindTexts(root);
             BuildVenueButtons(root);
             WireFooter(root);
+
+            _tutorial = new TutorialPanel(root);
+            _settings = new SettingsPanel(root, new PlayerProfileStore(new LocalDataStore()), _tutorial);
         }
 
         private void OnDestroy()
         {
             _bindings.Dispose();
+            _settings?.Dispose();
+            _tutorial?.Dispose();
+
             if (_languageButton != null)
             {
                 _languageButton.clicked -= LocalizationService.ToggleLanguage;
             }
+
+            if (_settingsButton != null)
+            {
+                _settingsButton.clicked -= OpenSettings;
+            }
+        }
+
+        private void OpenSettings()
+        {
+            _settings.Open();
         }
 
         private void BindTexts(VisualElement root)
@@ -107,6 +118,12 @@ namespace Startup.Features.MainMenu
             if (_languageButton != null)
             {
                 _languageButton.clicked += LocalizationService.ToggleLanguage;
+            }
+
+            _settingsButton = root.Q<Button>("btn-settings");
+            if (_settingsButton != null)
+            {
+                _settingsButton.clicked += OpenSettings;
             }
 
             var quit = root.Q<Button>("btn-quit");

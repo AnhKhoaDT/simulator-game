@@ -68,7 +68,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 190410033672192
-    m_Localized: 'Money: {0}'
+    m_Localized: 'Shop wallet: {0}'
     m_Metadata:
       m_Items:
       - rid: 4303785569161314329
@@ -99,7 +99,7 @@ MonoBehaviour:
     m_Metadata:
       m_Items: []
   - m_Id: 190410071420931
-    m_Localized: Served {0}  +{1}
+    m_Localized: Paid for {0}  +{1}
     m_Metadata:
       m_Items:
       - rid: 4303785569161314329
@@ -162,6 +162,102 @@ MonoBehaviour:
     m_Metadata:
       m_Items:
       - rid: 4303785569161314329
+  - m_Id: 301432564297728
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269248
+    m_Localized: Closed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269249
+    m_Localized: Open shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269250
+    m_Localized: Close shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115118837760
+    m_Localized: "WASD: walk  \u2022  Mouse: look  \u2022  V: switch view  \u2022  Tab: show cursor  \u2022  O: open/close  \u2022  B: shop  \u2022  Esc: pause"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115148197888
+    m_Localized: "Drag left side: walk  \u2022  Drag right side: look around"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960795156480
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933696
+    m_Localized: Owner name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933697
+    m_Localized: How to play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933698
+    m_Localized: Owner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933699
+    m_Localized: Waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933700
+    m_Localized: How to play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933701
+    m_Localized: Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933702
+    m_Localized: 'PC: WASD to walk, move the mouse to look around. Click the game to lock the cursor, Tab to free it for buttons. Phone: drag the left half to walk, the right half to look.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933703
+    m_Localized: Opening the bar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933704
+    m_Localized: Press Open shop (O) to start a shift and passers-by will come in. Evenings from 17:00 to 23:00 are busiest, late night is quiet. Close whenever you like; seated guests still finish.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933705
+    m_Localized: Serving guests
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933706
+    m_Localized: 'Seated guests show a bubble with the item they want. Walk up to them to serve it and it appears on the table. The bar under the bubble is their patience: red means they are about to leave.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933707
+    m_Localized: Taking payment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933708
+    m_Localized: After eating, guests show a coin and queue at the cashier. Stand on the circle behind the counter (it turns green) to take payment. If nobody comes, they leave without paying.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933709
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933710
+    m_Localized: Spend the shop wallet (B) on more tables and a waiter who serves for you. New menu items unlock as total revenue grows.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933711
+    m_Localized: Camera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933712
+    m_Localized: V switches between first person and the over-the-shoulder view. Esc pauses the game.
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds:

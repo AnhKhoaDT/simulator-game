@@ -1,5 +1,18 @@
 /* In-game HUD: stats top-left, pause button top-right, pause overlay on top. */
 @import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+@import url("project://database/Assets/_Project/UI/Shared/Panels.uss");
+
+.name-tag {
+    position: absolute;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.55);
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
 
 .hud-root {
     flex-grow: 1;
@@ -44,13 +57,99 @@
     margin-top: var(--space-s);
 }
 
+.hud-status--open {
+    color: rgb(110, 220, 130);
+    -unity-font-style: bold;
+}
+
+.hud-status--closed {
+    color: rgb(240, 120, 110);
+    -unity-font-style: bold;
+}
+
+/* Two classes, so these win over the plain .hud-btn rules below. */
+.hud-btn.hud-btn--open {
+    background-color: rgb(46, 125, 70);
+    -unity-font-style: bold;
+}
+
+.hud-btn.hud-btn--close {
+    background-color: rgb(140, 50, 45);
+}
+
+.crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.hint-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12px;
+    align-items: center;
+}
+
+.hint {
+    font-size: var(--font-small);
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(0, 0, 0, 0.45);
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+.joystick-base {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 70px;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.joystick-knob {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
 .hud-btn {
+    min-width: 132px;
+    height: 40px;
     font-size: var(--font-body);
+    -unity-text-align: middle-center;
     color: var(--color-text);
-    background-color: var(--color-surface);
-    padding: var(--space-s) var(--space-m);
-    border-radius: 8px;
+    background-color: rgba(26, 32, 41, 0.92);
+    border-width: 0;
+    padding: 0 var(--space-m);
+    border-radius: 10px;
     margin: 0 0 var(--space-s) 0;
+}
+
+.hud-btn:hover {
+    background-color: rgb(40, 50, 64);
+}
+
+.hud-btn:active {
+    background-color: rgb(20, 26, 34);
+}
+
+.hud-btn.hud-btn--open:hover {
+    background-color: rgb(60, 150, 88);
+}
+
+.hud-btn.hud-btn--close:hover {
+    background-color: rgb(165, 64, 58);
 }
 
 .pause-overlay {

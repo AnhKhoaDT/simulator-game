@@ -6,13 +6,23 @@
                 <ui:Label name="money" class="hud-stat hud-stat--money" picking-mode="Ignore" />
                 <ui:Label name="customers" class="hud-stat" picking-mode="Ignore" />
                 <ui:Label name="time" class="hud-stat" picking-mode="Ignore" />
+                <ui:Label name="status-open" class="hud-stat hud-status--open" picking-mode="Ignore" />
+                <ui:Label name="status-closed" class="hud-stat hud-status--closed" picking-mode="Ignore" />
                 <ui:Label name="toast" class="hud-toast" picking-mode="Ignore" />
                 <ui:Label name="toast-unlock" class="hud-toast hud-toast--unlock" picking-mode="Ignore" />
             </ui:VisualElement>
             <ui:VisualElement name="actions" class="actions" picking-mode="Ignore">
+                <ui:Button name="btn-open" class="hud-btn hud-btn--open" />
+                <ui:Button name="btn-close" class="hud-btn hud-btn--close" />
                 <ui:Button name="btn-shop" class="hud-btn" />
                 <ui:Button name="btn-pause" class="hud-btn" />
             </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="crosshair" class="crosshair" picking-mode="Ignore" />
+        <ui:VisualElement name="hint-bar" class="hint-bar" picking-mode="Ignore">
+            <ui:Label name="hint-pc" class="hint" picking-mode="Ignore" />
+            <ui:Label name="hint-touch" class="hint" picking-mode="Ignore" />
         </ui:VisualElement>
 
         <ui:VisualElement name="shop-overlay" class="pause-overlay">
@@ -41,8 +51,9 @@
         <ui:VisualElement name="pause-overlay" class="pause-overlay">
             <ui:VisualElement class="pause-panel">
                 <ui:Label name="pause-title" class="pause-title" />
-                <ui:Button name="btn-resume" class="hud-btn" />
-                <ui:Button name="btn-home" class="hud-btn" />
+                <ui:Button name="btn-resume" class="panel-btn panel-btn--primary" />
+                <ui:Button name="btn-settings" class="panel-btn" />
+                <ui:Button name="btn-home" class="panel-btn panel-btn--secondary" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

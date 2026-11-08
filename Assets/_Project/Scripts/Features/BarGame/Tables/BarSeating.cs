@@ -18,6 +18,12 @@ namespace Startup.Features.BarGame
             _obstacles.Add(table.Footprint);
         }
 
+        // Non-table furniture everyone must walk around, such as the cashier counter.
+        public void AddObstacle(Rect footprint)
+        {
+            _obstacles.Add(footprint);
+        }
+
         public bool TryReserve(Vector3 from, out BarTable table, out int seatIndex)
         {
             table = null;

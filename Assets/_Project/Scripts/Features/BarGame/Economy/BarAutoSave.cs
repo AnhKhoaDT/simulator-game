@@ -7,12 +7,14 @@ namespace Startup.Features.BarGame
     {
         private EconomyManager _economy;
         private BarUpgrades _upgrades;
+        private ShiftClock _clock;
         private BarSaveStore _store;
 
-        public void Setup(EconomyManager economy, BarUpgrades upgrades, BarSaveStore store)
+        public void Setup(EconomyManager economy, BarUpgrades upgrades, ShiftClock clock, BarSaveStore store)
         {
             _economy = economy;
             _upgrades = upgrades;
+            _clock = clock;
             _store = store;
             _economy.Changed += Save;
             _upgrades.Changed += Save;
@@ -45,7 +47,7 @@ namespace Startup.Features.BarGame
 
         private void Save()
         {
-            _store.Save(_economy, _upgrades);
+            _store.Save(_economy, _upgrades, _clock);
         }
     }
 }

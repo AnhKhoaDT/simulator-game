@@ -4,91 +4,96 @@ using UnityEngine;
 
 namespace Startup.Features.BarGame
 {
-    // One customer: walk in, sit, order, wait to be served, eat, pay, leave. Small state machine.
+    // One customer: walk in from the street, sit, order, eat, pay at the counter, walk away. Small state machine.
     public class Customer : MonoBehaviour
     {
         private const float ArriveDistance = 0.05f;
+        private const float QueueArriveDistance = 0.15f;
         private const float RetryInterval = 0.25f;
         private const float TurnSpeedDegrees = 540f;
         private const float MinLookSqrDistance = 0.0001f;
-        private const float UrgentRemainingRatio = 0.3f;
-
-        private static readonly Color UrgentColor = new Color(0.9f, 0.15f, 0.15f);
+        private const float FoodSize = 0.3f;
 
         private enum State
         {
             Entering,
             WaitingForSeat,
             WalkingToSeat,
-            WaitingForService,
+            Ordering,
             Eating,
+            WalkingToCashier,
+            WaitingToPay,
             Leaving
         }
 
         private readonly List<Vector3> _path = new List<Vector3>();
+        private readonly Dictionary<ItemShape, GameObject> _food = new Dictionary<ItemShape, GameObject>();
 
         private Renderer _body;
+        private CustomerBubble _bubble;
         private CharacterAnimator _animator;
-        private Transform _bubble;
-        private Renderer _bubbleRenderer;
-        private BarSeating _seating;
-        private OrderSystem _orders;
-        private CustomerSettings _settings;
+        private CustomerContext _context;
         private MenuItem _order;
-        private Quaternion _bubbleRotation;
-        private Vector3 _exitPoint;
+        private GameObject _servedFood;
         private BarTable _table;
         private int _seatIndex = -1;
         private int _pathIndex;
+        private float _laneZ;
+        private float _exitX;
         private State _state;
         private float _timer;
         private float _retryTimer;
-        private bool _urgent;
 
         public event Action<Customer> Finished;
 
-        public bool IsWaitingForService => _state == State.WaitingForService;
+        public bool IsWaitingForService => _state == State.Ordering;
+
+        internal bool IsReadyToPay =>
+            _state == State.WaitingToPay
+            && FlatSqrDistance(transform.position, _context.Counter.GetSpot(this)) <= QueueArriveDistance * QueueArriveDistance;
 
         // body is null for character models (texture is baked in); animator is null for primitives.
-        internal void Initialize(Renderer body, Transform bubble, Renderer bubbleRenderer, CharacterAnimator animator)
+        internal void Initialize(Renderer body, CustomerBubble bubble, CharacterAnimator animator)
         {
             _body = body;
             _bubble = bubble;
-            _bubbleRenderer = bubbleRenderer;
             _animator = animator;
         }
 
-        internal void Begin(BarSeating seating, OrderSystem orders, CustomerSettings settings,
-            Quaternion bubbleRotation, Vector3 spawnPoint, Vector3 waitPoint, Vector3 exitPoint, Color color)
+        internal void Begin(CustomerContext context, Vector3 spawnPoint, Vector3 waitPoint, float exitX, Color color)
         {
-            _seating = seating;
-            _orders = orders;
-            _settings = settings;
-            _bubbleRotation = bubbleRotation;
-            _exitPoint = exitPoint;
+            _context = context;
             _table = null;
             _order = null;
             _seatIndex = -1;
+            _laneZ = spawnPoint.z;
+            _exitX = exitX;
+
             if (_body != null)
             {
                 _body.sharedMaterial = PrimitiveFactory.GetMaterial(color);
             }
 
-            _bubble.gameObject.SetActive(false);
+            _bubble.Hide();
+            HideFood();
 
             transform.position = spawnPoint;
             gameObject.SetActive(true);
 
+            var layout = context.Layout;
             _path.Clear();
+            _path.Add(layout.SidewalkPoint(layout.DoorX, _laneZ));
+            _path.Add(layout.DoorOutside);
+            _path.Add(layout.DoorInside);
             _path.Add(waitPoint);
             _pathIndex = 0;
             SetState(State.Entering);
         }
 
-        // Where a waiter should stand to serve this customer; false if they are not waiting at a seat.
+        // Where a waiter should stand to serve this customer; false if they are not ordering at a seat.
         public bool TryGetServicePoint(out Vector3 point)
         {
-            if (_state != State.WaitingForService || _table == null)
+            if (_state != State.Ordering || _table == null)
             {
                 point = default;
                 return false;
@@ -98,19 +103,34 @@ namespace Startup.Features.BarGame
             return true;
         }
 
-        // Returns true if this customer was waiting for service and is now being served.
+        // Returns true if this customer was ordering and is now served (food appears on the table).
         public bool TryServe()
         {
-            if (_state != State.WaitingForService)
+            if (_state != State.Ordering)
             {
                 return false;
             }
 
-            _bubble.gameObject.SetActive(false);
+            _bubble.Hide();
+            ShowFood();
             _timer = 0f;
             SetState(State.Eating);
-            _orders.NotifyServed();
+            _context.Orders.NotifyServed();
             return true;
+        }
+
+        // Called by the counter when this customer is first in line and someone is collecting.
+        internal void Pay()
+        {
+            if (_state != State.WaitingToPay)
+            {
+                return;
+            }
+
+            _context.Counter.Leave(this);
+            _context.Orders.Complete(_order);
+            _bubble.Hide();
+            StartLeaving(null);
         }
 
         private void Update()
@@ -120,9 +140,9 @@ namespace Startup.Features.BarGame
                 case State.Entering:
                     if (FollowPath())
                     {
-                        SetState(State.WaitingForSeat);
                         _timer = 0f;
                         _retryTimer = 0f;
+                        SetState(State.WaitingForSeat);
                     }
 
                     break;
@@ -136,11 +156,22 @@ namespace Startup.Features.BarGame
                     }
 
                     break;
-                case State.WaitingForService:
-                    UpdateWaitingForService();
+                case State.Ordering:
+                    UpdateOrdering();
                     break;
                 case State.Eating:
                     UpdateEating();
+                    break;
+                case State.WalkingToCashier:
+                    if (FollowPath())
+                    {
+                        _timer = 0f;
+                        SetState(State.WaitingToPay);
+                    }
+
+                    break;
+                case State.WaitingToPay:
+                    UpdateWaitingToPay();
                     break;
                 case State.Leaving:
                     if (FollowPath())
@@ -160,16 +191,16 @@ namespace Startup.Features.BarGame
             if (_retryTimer <= 0f)
             {
                 _retryTimer = RetryInterval;
-                if (_seating.TryReserve(transform.position, out _table, out _seatIndex))
+                if (_context.Seating.TryReserve(transform.position, out _table, out _seatIndex))
                 {
                     WalkToSeat();
                     return;
                 }
             }
 
-            if (_timer >= _settings.WaitForSeatSeconds)
+            if (_timer >= _context.Settings.WaitForSeatSeconds)
             {
-                _orders.NotifyAbandoned();
+                _context.Orders.NotifyAbandoned();
                 StartLeaving(null);
             }
         }
@@ -177,7 +208,7 @@ namespace Startup.Features.BarGame
         private void WalkToSeat()
         {
             _path.Clear();
-            PathPlanner.Plan(transform.position, _table.GetApproachPoint(_seatIndex), _seating.Obstacles, _path);
+            PathPlanner.Plan(transform.position, _table.GetApproachPoint(_seatIndex), _context.Seating.Obstacles, _path);
             _path.Add(_table.GetSeatPosition(_seatIndex));
             _pathIndex = 0;
             SetState(State.WalkingToSeat);
@@ -186,69 +217,104 @@ namespace Startup.Features.BarGame
         private void Sit()
         {
             FaceTowards(_table.transform.position);
-            _order = _orders.PickItem();
+            _order = _context.Orders.PickItem();
             if (_order == null)
             {
-                LeaveSeat();
+                StandUpAndLeave();
                 return;
             }
 
-            ShowBubble();
+            _bubble.ShowOrder(_order.Shape);
             _timer = 0f;
-            _urgent = false;
-            SetState(State.WaitingForService);
+            SetState(State.Ordering);
         }
 
-        private void UpdateWaitingForService()
+        private void UpdateOrdering()
         {
             _timer += Time.deltaTime;
-            var wait = _orders.ServiceWaitSeconds;
-
-            if (!_urgent && _timer >= wait * (1f - UrgentRemainingRatio))
-            {
-                _urgent = true;
-                _bubbleRenderer.sharedMaterial = PrimitiveFactory.GetMaterial(UrgentColor);
-            }
+            var wait = _context.Orders.ServiceWaitSeconds;
+            _bubble.SetPatience(1f - _timer / wait);
 
             // Out of patience: leave without paying.
             if (_timer >= wait)
             {
-                _orders.NotifyAbandoned();
-                LeaveSeat();
+                _context.Orders.NotifyAbandoned();
+                StandUpAndLeave();
             }
         }
 
         private void UpdateEating()
         {
             _timer += Time.deltaTime;
-            if (_timer < _order.EatSeconds)
+            if (_timer >= _order.EatSeconds)
             {
-                return;
+                GoToCashier();
+            }
+        }
+
+        private void GoToCashier()
+        {
+            HideFood();
+            var approach = StandUp();
+            var counter = _context.Counter;
+            counter.Join(this);
+            _bubble.ShowPay();
+
+            _path.Clear();
+            _path.Add(approach);
+            PathPlanner.Plan(approach, counter.GetSpot(this), _context.Seating.Obstacles, _path);
+            _pathIndex = 0;
+            SetState(State.WalkingToCashier);
+        }
+
+        // The queue moves forward as others pay, so keep stepping toward the current spot.
+        private void UpdateWaitingToPay()
+        {
+            var counter = _context.Counter;
+            var spot = counter.GetSpot(this);
+            if (FlatSqrDistance(transform.position, spot) > QueueArriveDistance * QueueArriveDistance)
+            {
+                FaceTowards(spot);
+                transform.position = Vector3.MoveTowards(transform.position, spot, _context.Settings.WalkSpeed * Time.deltaTime);
+            }
+            else
+            {
+                FaceTowards(_context.Layout.CounterCenter);
             }
 
-            _orders.Complete(_order);
-            LeaveSeat();
+            _timer += Time.deltaTime;
+            var wait = _context.Settings.WaitToPaySeconds;
+            _bubble.SetPatience(1f - _timer / wait);
+
+            // Nobody came to the counter in time: they walk out without paying.
+            if (_timer >= wait)
+            {
+                counter.Leave(this);
+                _context.Orders.NotifyAbandoned();
+                _bubble.Hide();
+                StartLeaving(null);
+            }
         }
 
-        private void ShowBubble()
-        {
-            _bubble.rotation = _bubbleRotation;
-            _bubbleRenderer.sharedMaterial = PrimitiveFactory.GetMaterial(_order.Color);
-            _bubble.gameObject.SetActive(true);
-        }
-
-        private void LeaveSeat()
+        private Vector3 StandUp()
         {
             var approach = _table.GetApproachPoint(_seatIndex);
             _table.Release(_seatIndex);
             _table = null;
-            _bubble.gameObject.SetActive(false);
-            StartLeaving(approach);
+            return approach;
         }
 
-        // 'firstStep' is where to step off the seat to before heading for the door; null if already standing.
+        private void StandUpAndLeave()
+        {
+            _bubble.Hide();
+            HideFood();
+            StartLeaving(StandUp());
+        }
+
+        // Back out through the door and along the sidewalk; 'firstStep' is where to step off a seat first.
         private void StartLeaving(Vector3? firstStep)
         {
+            var layout = _context.Layout;
             _path.Clear();
             var from = transform.position;
             if (firstStep.HasValue)
@@ -257,9 +323,34 @@ namespace Startup.Features.BarGame
                 from = firstStep.Value;
             }
 
-            PathPlanner.Plan(from, _exitPoint, _seating.Obstacles, _path);
+            PathPlanner.Plan(from, layout.DoorInside, _context.Seating.Obstacles, _path);
+            _path.Add(layout.DoorOutside);
+            _path.Add(layout.SidewalkPoint(layout.DoorX, _laneZ));
+            _path.Add(layout.SidewalkPoint(_exitX, _laneZ));
             _pathIndex = 0;
             SetState(State.Leaving);
+        }
+
+        private void ShowFood()
+        {
+            if (!_food.TryGetValue(_order.Shape, out var food))
+            {
+                food = ItemVisuals.Build(_order.Shape, transform, FoodSize);
+                _food[_order.Shape] = food;
+            }
+
+            food.transform.SetPositionAndRotation(_table.GetFoodPoint(_seatIndex), Quaternion.identity);
+            food.SetActive(true);
+            _servedFood = food;
+        }
+
+        private void HideFood()
+        {
+            if (_servedFood != null)
+            {
+                _servedFood.SetActive(false);
+                _servedFood = null;
+            }
         }
 
         private void SetState(State state)
@@ -274,17 +365,17 @@ namespace Startup.Features.BarGame
             {
                 case State.Entering:
                 case State.WalkingToSeat:
+                case State.WalkingToCashier:
                 case State.Leaving:
                     _animator.PlayWalk();
                     break;
                 case State.WaitingForSeat:
+                case State.WaitingToPay:
                     _animator.PlayIdle();
                     break;
-                case State.WaitingForService:
-                    _animator.PlaySit();
-                    break;
+                case State.Ordering:
                 case State.Eating:
-                    _animator.PlayEat();
+                    _animator.PlaySit();
                     break;
             }
         }
@@ -298,7 +389,7 @@ namespace Startup.Features.BarGame
 
             var target = _path[_pathIndex];
             FaceTowards(target);
-            transform.position = Vector3.MoveTowards(transform.position, target, _settings.WalkSpeed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, target, _context.Settings.WalkSpeed * Time.deltaTime);
 
             if ((transform.position - target).sqrMagnitude <= ArriveDistance * ArriveDistance)
             {
@@ -319,6 +410,13 @@ namespace Startup.Features.BarGame
 
             var rotation = Quaternion.LookRotation(look);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, TurnSpeedDegrees * Time.deltaTime);
+        }
+
+        private static float FlatSqrDistance(Vector3 a, Vector3 b)
+        {
+            var offset = a - b;
+            offset.y = 0f;
+            return offset.sqrMagnitude;
         }
     }
 }

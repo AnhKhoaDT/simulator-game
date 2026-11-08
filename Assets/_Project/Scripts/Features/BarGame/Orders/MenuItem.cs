@@ -13,17 +13,20 @@ namespace Startup.Features.BarGame
         public Color Color = Color.white;
         [Tooltip("Total revenue needed before customers start ordering this item. 0 = available from the start.")]
         [Min(0)] public int UnlockRevenue;
+        [Tooltip("Model shown on the order bubble and on the table.")]
+        public ItemShape Shape;
 
         public MenuItem()
         {
         }
 
-        public MenuItem(string nameKey, int price, float eatSeconds, Color color, int unlockRevenue = 0)
+        public MenuItem(string nameKey, int price, float eatSeconds, Color color, ItemShape shape, int unlockRevenue = 0)
         {
             NameKey = nameKey;
             Price = price;
             EatSeconds = eatSeconds;
             Color = color;
+            Shape = shape;
             UnlockRevenue = unlockRevenue;
         }
     }

@@ -1,6 +1,7 @@
 using System.Collections;
 using Startup.Core.Localization;
 using Startup.Core.SceneFlow;
+using Startup.Core.UI;
 using Startup.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,7 +12,6 @@ namespace Startup.Features.Splash
     public class SplashController : MonoBehaviour
     {
         private const string UxmlPath = "UI/Splash";
-        private const string PanelSettingsPath = "UI/MainPanelSettings";
 
         [SerializeField, Range(0.5f, 10f)] private float _displaySeconds = 2.5f;
 
@@ -19,21 +19,14 @@ namespace Startup.Features.Splash
 
         private void Start()
         {
-            var uxml = Resources.Load<VisualTreeAsset>(UxmlPath);
-            var panelSettings = Resources.Load<PanelSettings>(PanelSettingsPath);
-
-            if (uxml == null || panelSettings == null)
+            var root = UiDocuments.Create(gameObject, UxmlPath, out _);
+            if (root == null)
             {
-                Debug.LogError($"SplashController could not load UI from Resources ('{UxmlPath}', '{PanelSettingsPath}').");
                 return;
             }
 
-            var document = gameObject.AddComponent<UIDocument>();
-            document.panelSettings = panelSettings;
-            document.visualTreeAsset = uxml;
-
             LocalizationService.Initialize(new LanguagePreferenceStore(new LocalDataStore()));
-            BindTexts(document.rootVisualElement);
+            BindTexts(root);
             StartCoroutine(ShowThenContinue());
         }
 

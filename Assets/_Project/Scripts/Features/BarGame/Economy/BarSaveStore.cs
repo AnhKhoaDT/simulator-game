@@ -14,14 +14,16 @@ namespace Startup.Features.BarGame
             _store = store;
         }
 
-        public void LoadInto(EconomyManager economy, BarUpgrades upgrades)
+        // Restores economy and upgrades; the caller reads the returned data for the clock.
+        public BarSaveData LoadInto(EconomyManager economy, BarUpgrades upgrades)
         {
             var data = _store.Load(Key, new BarSaveData());
             economy.Restore(data);
             upgrades.Restore(data);
+            return data;
         }
 
-        public void Save(EconomyManager economy, BarUpgrades upgrades)
+        public void Save(EconomyManager economy, BarUpgrades upgrades, ShiftClock clock)
         {
             var data = new BarSaveData
             {
@@ -29,7 +31,8 @@ namespace Startup.Features.BarGame
                 TotalRevenue = economy.TotalRevenue,
                 CustomersServed = economy.CustomersServed,
                 TablesOwned = upgrades.TablesOwned,
-                WaiterLevel = upgrades.WaiterLevel
+                WaiterLevel = upgrades.WaiterLevel,
+                ClockMinutes = clock != null ? clock.TotalMinutes : -1
             };
             _store.Save(Key, data);
         }

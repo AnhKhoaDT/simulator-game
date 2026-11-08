@@ -1,5 +1,6 @@
 /* Main menu layout & style. Responsive via flex + percentage width. */
 @import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+@import url("project://database/Assets/_Project/UI/Shared/Panels.uss");
 
 .menu-root {
     flex-grow: 1;
@@ -10,15 +11,17 @@
 }
 
 .menu-title {
-    font-size: var(--font-title);
-    color: var(--color-text);
+    font-size: 64px;
+    color: var(--color-accent);
     -unity-font-style: bold;
-    margin-bottom: var(--space-s);
+    -unity-text-align: middle-center;
+    margin-bottom: 4px;
 }
 
 .menu-subtitle {
     font-size: var(--font-body);
     color: var(--color-muted);
+    -unity-text-align: middle-center;
     margin-bottom: var(--space-l);
 }
 
@@ -28,13 +31,17 @@
     align-items: stretch;
 }
 
+/* Venue cards: name centered, a "locked" pill on the right for venues not yet open. */
 .venue-btn {
-    height: 64px;
-    margin-bottom: var(--space-m);
-    border-radius: 12px;
+    height: 68px;
+    margin: 0 0 var(--space-m) 0;
+    border-radius: 14px;
     border-width: 0;
-    font-size: var(--font-body);
+    border-bottom-width: 4px;
+    border-color: rgb(204, 132, 40);
+    font-size: 22px;
     -unity-font-style: bold;
+    -unity-text-align: middle-center;
     background-color: var(--color-accent);
     color: rgb(30, 22, 10);
 }
@@ -43,8 +50,14 @@
     background-color: rgb(255, 196, 110);
 }
 
+.venue-btn:active {
+    border-bottom-width: 1px;
+    margin-top: 3px;
+}
+
 .venue-btn--locked {
     background-color: var(--color-surface);
+    border-color: rgb(16, 20, 26);
     color: var(--color-muted);
 }
 
@@ -53,8 +66,18 @@
 }
 
 .venue-badge {
-    margin-left: var(--space-s);
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    margin-top: -12px;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 12px;
     font-size: var(--font-small);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: var(--color-muted);
+    background-color: rgba(255, 255, 255, 0.08);
 }
 
 .footer-bar {
@@ -64,17 +87,22 @@
 }
 
 .footer-btn {
-    height: 40px;
-    min-width: 100px;
-    margin-left: var(--space-s);
-    margin-right: var(--space-s);
+    height: 44px;
+    min-width: 150px;
+    margin: 0 var(--space-s);
+    padding: 0 var(--space-m);
     border-radius: 10px;
     border-width: 0;
     font-size: var(--font-small);
+    -unity-text-align: middle-center;
     background-color: var(--color-surface);
     color: var(--color-text);
 }
 
 .footer-btn:hover {
     background-color: var(--color-accent-2);
+}
+
+.footer-btn:active {
+    background-color: rgb(50, 120, 200);
 }

@@ -1,0 +1,133 @@
+/* Shared popups (Settings, How to play) and button look. Imported by every screen's USS. */
+@import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+
+.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(5, 8, 12, 0.72);
+    align-items: center;
+    justify-content: center;
+}
+
+.panel {
+    width: 46%;
+    min-width: 340px;
+    max-width: 560px;
+    max-height: 85%;
+    padding: var(--space-l);
+    background-color: var(--color-bg);
+    border-radius: 16px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    align-items: stretch;
+}
+
+.panel--wide {
+    width: 62%;
+    max-width: 760px;
+}
+
+.panel-title {
+    font-size: 32px;
+    color: var(--color-text);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-m);
+}
+
+.panel-body {
+    flex-shrink: 1;
+    align-items: stretch;
+    margin-bottom: var(--space-m);
+}
+
+.panel-scroll {
+    flex-shrink: 1;
+    max-height: 420px;
+}
+
+.panel-section {
+    margin-bottom: var(--space-m);
+    padding: var(--space-m);
+    border-radius: 10px;
+    background-color: var(--color-surface);
+}
+
+.panel-heading {
+    font-size: var(--font-body);
+    color: var(--color-accent);
+    -unity-font-style: bold;
+    margin-bottom: 4px;
+}
+
+.panel-text {
+    font-size: var(--font-small);
+    color: var(--color-text);
+}
+
+.panel-row {
+    margin-bottom: var(--space-m);
+}
+
+.panel-field-label {
+    font-size: var(--font-small);
+    color: var(--color-muted);
+    margin-bottom: 4px;
+}
+
+.panel-field {
+    margin: 0;
+}
+
+.panel-field .unity-text-field__input {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    border-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 8px 12px;
+    min-height: 40px;
+}
+
+/* Every game button: centered text, rounded, clear hover and press states. */
+.panel-btn {
+    height: 46px;
+    margin: 0 0 var(--space-s) 0;
+    border-width: 0;
+    border-radius: 10px;
+    font-size: var(--font-body);
+    -unity-text-align: middle-center;
+    color: var(--color-text);
+    background-color: var(--color-surface);
+}
+
+.panel-btn:hover {
+    background-color: rgb(40, 50, 64);
+}
+
+.panel-btn:active {
+    background-color: rgb(20, 26, 34);
+}
+
+.panel-btn--primary {
+    background-color: var(--color-accent);
+    color: rgb(30, 22, 10);
+    -unity-font-style: bold;
+}
+
+.panel-btn--primary:hover {
+    background-color: rgb(255, 196, 110);
+}
+
+.panel-btn--secondary {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--color-muted);
+}
+
+.panel-btn--secondary:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: var(--color-text);
+}

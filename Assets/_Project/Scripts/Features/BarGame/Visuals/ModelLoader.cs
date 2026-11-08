@@ -74,6 +74,24 @@ namespace Startup.Features.BarGame
             Recenter(wrapper);
         }
 
+        // Uniform scale so the model is exactly 'width' wide along X, keeping its proportions.
+        public static void FitToWidth(GameObject wrapper, float width)
+        {
+            if (!TryGetBounds(wrapper, out var bounds) || !IsValid(wrapper, bounds.size.x))
+            {
+                return;
+            }
+
+            wrapper.transform.localScale = Vector3.one * (width / bounds.size.x);
+            Recenter(wrapper);
+        }
+
+        // World-space size of the model as it is now (after any fitting).
+        public static Vector3 MeasureSize(GameObject wrapper)
+        {
+            return TryGetBounds(wrapper, out var bounds) ? bounds.size : Vector3.zero;
+        }
+
         // Uniform scale to a target height, keeping the model's proportions.
         public static void FitToHeight(GameObject wrapper, float height)
         {

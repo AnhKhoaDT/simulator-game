@@ -14,6 +14,10 @@ namespace Startup.Features.BarGame
 
         [Tooltip("Height of the sitting surface above each seat anchor.")]
         [SerializeField] private float _seatSurfaceOffset;
+        [Tooltip("Height of the table top, where food is placed.")]
+        [SerializeField, Min(0f)] private float _surfaceHeight = 0.75f;
+        [Tooltip("How far from the table center, toward the seat, food is placed.")]
+        [SerializeField, Min(0f)] private float _foodInset = 0.4f;
 
         private bool[] _occupied;
 
@@ -76,6 +80,17 @@ namespace Startup.Features.BarGame
         public Vector3 GetSeatPosition(int index)
         {
             return _seats[index].position + Vector3.up * _seatSurfaceOffset;
+        }
+
+        // A spot on the table top in front of this seat, where the customer's food goes.
+        public Vector3 GetFoodPoint(int index)
+        {
+            var center = transform.position;
+            var toSeat = _seats[index].position - center;
+            toSeat.y = 0f;
+            var point = center + toSeat.normalized * _foodInset;
+            point.y = center.y + _surfaceHeight;
+            return point;
         }
 
         public Vector3 GetApproachPoint(int index)
