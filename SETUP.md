@@ -125,3 +125,33 @@ feature cần trao đổi, đi qua Core hoặc một event channel.
 > Unity tự sinh file `.meta` cho mỗi file/thư mục mới khi import (lần đầu mở project, hoặc
 > khi focus lại Editor sau khi tạo file từ bên ngoài). **Không** tạo tay file `.meta` và
 > **không** thêm `*.meta` vào `.gitignore`; khi commit nhớ commit `.meta` kèm asset của nó.
+
+---
+
+## Giai đoạn 4 — Localization
+
+Game hỗ trợ tiếng Việt (mặc định, `vi`) và tiếng Anh (`en`). Mọi chữ hiển thị lấy từ String Table `UI`, không còn chữ cứng trong code/UXML.
+
+### 1. Cài package
+1. Mở project, chờ Unity đọc `Packages/manifest.json` (đã có `com.unity.localization` 1.5.13) và compile xong.
+2. Kiểm tra: `Window > Package Manager > In Project`, thấy **Localization**. Nếu Unity báo version không tương thích, cài version registry gợi ý rồi báo lại.
+3. Unity tự cập nhật `Packages/packages-lock.json`; commit file này cùng manifest.
+
+### 2. Chạy Setup Localization
+1. Menu `Startup > Setup Localization`.
+2. Console in `Startup localization ready. N entries added or updated.` (lỗi đỏ = chưa cài xong package).
+3. Asset được tạo trong `Assets/_Project/Settings/Localization/`: `Localization Settings.asset`, `Locales/` (vi, en), `Tables/` (collection `UI`).
+4. Kiểm tra: `Edit > Project Settings > Localization` thấy Locale `vi` và `en`. Chạy lại lệnh không tạo trùng.
+5. Nếu Unity chưa thêm `Localization Settings` vào Project Settings tự động, chọn nó ở ô Localization Settings trong cửa sổ đó.
+
+### 3. Thử đổi ngôn ngữ
+1. Mở scene `Splash`, nhấn Play: chữ tiếng Việt.
+2. Ở Main Menu, bấm nút ngôn ngữ ở dưới: toàn bộ chữ đổi sang tiếng Anh ngay, bấm lại để quay về tiếng Việt.
+3. Dừng Play rồi Play lại: ngôn ngữ được nhớ (file `settings_language.json` trong `persistentDataPath`).
+
+### 4. Thêm key hoặc ngôn ngữ mới
+- Key mới: thêm một dòng vào `Scripts/Editor/LocalizationData.cs`, thêm hằng số vào `Scripts/Core/Localization/LocKeys.cs` (tên `snake_case` có prefix `menu_`, `hud_`...), rồi chạy lại `Startup > Setup Localization`.
+- Ngôn ngữ mới: thêm mã vào `LanguageCodes.cs`, thêm cột giá trị trong `LocalizationData.cs` và vòng lặp tạo Locale trong `LocalizationSetup.cs`, chạy lại menu.
+
+### 5. Font tiếng Việt
+Font mặc định của UI Toolkit phải có dấu tiếng Việt (ă â ê ô ơ ư đ và dấu thanh). Nếu thấy ô vuông, gán font hỗ trợ tiếng Việt (ví dụ Noto Sans) trong text settings của `MainPanelSettings`. Kiểm tra lại trên bản build Android.

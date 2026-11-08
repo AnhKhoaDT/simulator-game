@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Startup.Core.Localization;
 using Startup.Core.SceneFlow;
+using Startup.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +14,9 @@ namespace Startup.Features.MainMenu
         private const string UxmlPath = "UI/MainMenu";
         private const string PanelSettingsPath = "UI/MainPanelSettings";
         private const string VenuesPath = "Venues";
+
+        private readonly LocalizedBindings _bindings = new LocalizedBindings();
+        private Button _languageButton;
 
         private void Start()
         {
@@ -29,8 +34,28 @@ namespace Startup.Features.MainMenu
             document.visualTreeAsset = uxml;
 
             var root = document.rootVisualElement;
+            LocalizationService.Initialize(new LanguagePreferenceStore(new LocalDataStore()));
+            BindTexts(root);
             BuildVenueButtons(root);
             WireFooter(root);
+        }
+
+        private void OnDestroy()
+        {
+            _bindings.Dispose();
+            if (_languageButton != null)
+            {
+                _languageButton.clicked -= LocalizationService.ToggleLanguage;
+            }
+        }
+
+        private void BindTexts(VisualElement root)
+        {
+            _bindings.Bind(root.Q<Label>("title"), LocKeys.MenuTitle);
+            _bindings.Bind(root.Q<Label>("subtitle"), LocKeys.MenuSubtitle);
+            _bindings.Bind(root.Q<Button>("btn-language"), LocKeys.MenuBtnLanguage);
+            _bindings.Bind(root.Q<Button>("btn-settings"), LocKeys.MenuBtnSettings);
+            _bindings.Bind(root.Q<Button>("btn-quit"), LocKeys.MenuBtnQuit);
         }
 
         private void BuildVenueButtons(VisualElement root)
@@ -52,9 +77,10 @@ namespace Startup.Features.MainMenu
             }
         }
 
-        private static Button CreateVenueButton(VenueDefinition venue)
+        private Button CreateVenueButton(VenueDefinition venue)
         {
-            var button = new Button { text = venue.DisplayName };
+            var button = new Button();
+            _bindings.Bind(button, venue.NameKey);
             button.AddToClassList("venue-btn");
 
             if (venue.Unlocked)
@@ -64,7 +90,10 @@ namespace Startup.Features.MainMenu
             }
             else
             {
-                button.text = venue.DisplayName + "  [Khoa]";
+                var badge = new Label();
+                badge.AddToClassList("venue-badge");
+                _bindings.Bind(badge, LocKeys.MenuVenueLocked);
+                button.Add(badge);
                 button.AddToClassList("venue-btn--locked");
                 button.SetEnabled(false);
             }
@@ -74,6 +103,12 @@ namespace Startup.Features.MainMenu
 
         private void WireFooter(VisualElement root)
         {
+            _languageButton = root.Q<Button>("btn-language");
+            if (_languageButton != null)
+            {
+                _languageButton.clicked += LocalizationService.ToggleLanguage;
+            }
+
             var quit = root.Q<Button>("btn-quit");
             if (quit != null)
             {

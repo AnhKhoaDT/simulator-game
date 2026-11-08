@@ -15,4 +15,6 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/BarGame.unity
     guid: d596929c5dd14414eb57a5ac37d2ffdb
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: fa45872224838505da8fc0b05441a89c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: 7f4aba341ebea2548928902abf99916d, type: 2}

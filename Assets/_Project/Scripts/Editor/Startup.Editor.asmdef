@@ -1,0 +1,20 @@
+{
+    "name": "Startup.Editor",
+    "rootNamespace": "Startup.EditorTools",
+    "references": [
+        "Startup.Core",
+        "Unity.Localization",
+        "Unity.Localization.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "autoReferenced": true,
+    "noEngineReferences": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "precompiledReferences": []
+}

@@ -1,3 +1,4 @@
+using Startup.Core.Localization;
 using Startup.Core.SceneFlow;
 using UnityEngine;
 
@@ -7,11 +8,11 @@ namespace Startup.Features.MainMenu
     [CreateAssetMenu(fileName = "Venue", menuName = "Startup/Venue Definition")]
     public class VenueDefinition : ScriptableObject
     {
-        [SerializeField] private string _displayName = "Quan Nhau";
+        [SerializeField] private string _nameKey = LocKeys.MenuVenueBar;
         [SerializeField] private string _sceneName = SceneNames.BarGame;
         [SerializeField] private bool _unlocked = true;
 
-        public string DisplayName => _displayName;
+        public string NameKey => _nameKey;
         public string SceneName => _sceneName;
         public bool Unlocked => _unlocked;
     }

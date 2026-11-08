@@ -52,6 +52,11 @@
     background-color: var(--color-surface);
 }
 
+.venue-badge {
+    margin-left: var(--space-s);
+    font-size: var(--font-small);
+}
+
 .footer-bar {
     flex-direction: row;
     justify-content: center;

@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 441db340ee50707f39fb3a6c8d55d103, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 4303785569161314329
+  m_TableData:
+  - m_Id: 489369600
+    m_Localized: Startup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 514535424
+    m_Localized: Business Simulation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729728
+    m_Localized: Loading...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729729
+    m_Localized: Startup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729730
+    m_Localized: Choose a venue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729731
+    m_Localized: Pub
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729732
+    m_Localized: Cafe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729733
+    m_Localized: Drink Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729734
+    m_Localized: Locked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729735
+    m_Localized: 'Language: English'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729736
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729737
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410033672192
+    m_Localized: 'Money: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226624
+    m_Localized: 'Customers served: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226625
+    m_Localized: 'Time: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226626
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420928
+    m_Localized: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420929
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420930
+    m_Localized: Main menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420931
+    m_Localized: Served {0}  +{1}
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410071420932
+    m_Localized: Beer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420933
+    m_Localized: Snack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420934
+    m_Localized: Soda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247772164096
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912832
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912833
+    m_Localized: Buy a table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912834
+    m_Localized: Hire a waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912835
+    m_Localized: (Tables {0}/{1} - Price {2})
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 192247814107136
+    m_Localized: (Level {0}/{1} - Price {2})
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 192247814107137
+    m_Localized: (Maxed out)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107138
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107139
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664474451968
+    m_Localized: Grilled meat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664524783616
+    m_Localized: 'New item: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  references:
+    version: 2
+    RefIds:
+    - rid: 4303785569161314329
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 190410033672192
+        - id: 190410067226624
+        - id: 190410067226625
+        - id: 190410071420931
+        - id: 192247809912835
+        - id: 192247814107136
+        - id: 267664524783616

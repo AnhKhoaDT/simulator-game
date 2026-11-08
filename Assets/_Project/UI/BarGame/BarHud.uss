@@ -1,0 +1,116 @@
+/* In-game HUD: stats top-left, pause button top-right, pause overlay on top. */
+@import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+
+.hud-root {
+    flex-grow: 1;
+    padding: var(--space-m);
+}
+
+.top-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.stats {
+    align-items: flex-start;
+}
+
+.hud-stat {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    padding: var(--space-s) var(--space-m);
+    border-radius: 8px;
+    margin-bottom: var(--space-s);
+}
+
+.hud-stat--money {
+    color: var(--color-accent);
+    -unity-font-style: bold;
+}
+
+.hud-toast {
+    font-size: var(--font-small);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    padding: var(--space-s) var(--space-m);
+    border-radius: 8px;
+}
+
+.hud-toast--unlock {
+    color: var(--color-accent);
+    -unity-font-style: bold;
+    margin-top: var(--space-s);
+}
+
+.hud-btn {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    padding: var(--space-s) var(--space-m);
+    border-radius: 8px;
+    margin: 0 0 var(--space-s) 0;
+}
+
+.pause-overlay {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+.pause-panel {
+    width: 40%;
+    max-width: 360px;
+    padding: var(--space-l);
+    background-color: var(--color-bg);
+    border-radius: 12px;
+    align-items: stretch;
+}
+
+.actions {
+    align-items: flex-end;
+}
+
+.shop-panel {
+    width: 60%;
+    max-width: 520px;
+}
+
+.shop-row {
+    margin-bottom: var(--space-m);
+    align-items: stretch;
+}
+
+.shop-heading {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-s);
+}
+
+.shop-name {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    -unity-font-style: bold;
+}
+
+.shop-info {
+    font-size: var(--font-small);
+    color: var(--color-muted);
+    margin-left: var(--space-s);
+}
+
+.pause-title {
+    font-size: var(--font-title);
+    color: var(--color-text);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-m);
+}

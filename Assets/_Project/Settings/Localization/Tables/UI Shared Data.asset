@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: UI Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: UI
+  m_TableCollectionNameGuidString: 441db340ee50707f39fb3a6c8d55d103
+  m_Entries:
+  - m_Id: 489369600
+    m_Key: splash_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 514535424
+    m_Key: splash_tagline
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729728
+    m_Key: splash_loading
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729729
+    m_Key: menu_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729730
+    m_Key: menu_subtitle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729731
+    m_Key: menu_venue_bar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729732
+    m_Key: menu_venue_cafe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729733
+    m_Key: menu_venue_drinks
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729734
+    m_Key: menu_venue_locked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729735
+    m_Key: menu_btn_language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729736
+    m_Key: menu_btn_settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729737
+    m_Key: menu_btn_quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410033672192
+    m_Key: hud_money
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410067226624
+    m_Key: hud_customers
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410067226625
+    m_Key: hud_time
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410067226626
+    m_Key: hud_btn_pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420928
+    m_Key: hud_paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420929
+    m_Key: common_resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420930
+    m_Key: common_home
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420931
+    m_Key: bargame_served
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420932
+    m_Key: bargame_item_beer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420933
+    m_Key: bargame_item_snack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420934
+    m_Key: bargame_item_soda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247772164096
+    m_Key: hud_btn_shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912832
+    m_Key: shop_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912833
+    m_Key: shop_upgrade_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912834
+    m_Key: shop_upgrade_waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912835
+    m_Key: shop_info_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107136
+    m_Key: shop_info_waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107137
+    m_Key: shop_maxed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107138
+    m_Key: shop_btn_buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107139
+    m_Key: common_close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664474451968
+    m_Key: bargame_item_grill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664524783616
+    m_Key: bargame_unlocked
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 4303785557170061582
+  references:
+    version: 2
+    RefIds:
+    - rid: 4303785557170061582
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1794083839733

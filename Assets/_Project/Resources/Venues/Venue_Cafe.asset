@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d4e5f6a7b80819243c5d6e7f8a9b02, type: 3}
   m_Name: Venue_Cafe
   m_EditorClassIdentifier: 
-  _displayName: Quan Cafe
+  _nameKey: menu_venue_cafe
   _sceneName: BarGame
   _unlocked: 0
