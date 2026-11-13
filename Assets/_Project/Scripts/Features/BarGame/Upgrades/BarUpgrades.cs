@@ -1,80 +1,88 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Startup.Features.BarGame
 {
-    // Plain C# upgrade state: how many tables are owned and the waiter level, with purchase rules.
+    // Plain C# staff state: the hired waiters, with purchase rules. Furniture lives in the inventory.
     public class BarUpgrades
     {
+        private const int FallbackWaiterPrice = 300;
+        private const float PriceGrowth = 1.4f;
+
         private readonly UpgradeSettings _settings;
+        private readonly List<WaiterRecord> _waiters = new List<WaiterRecord>();
 
         public BarUpgrades(UpgradeSettings settings)
         {
             _settings = settings;
-            TablesOwned = settings.StartTables;
         }
 
-        public int TablesOwned { get; private set; }
+        public IReadOnlyList<WaiterRecord> Waiters => _waiters;
 
-        public int WaiterLevel { get; private set; }
-
-        public int MaxTables => _settings.StartTables + _settings.TablePrices.Length;
-
-        public int MaxWaiterLevel => _settings.WaiterPrices.Length;
-
-        public bool CanBuyTable => TablesOwned < MaxTables;
-
-        public bool CanHireWaiter => WaiterLevel < MaxWaiterLevel;
-
-        public int NextTablePrice => CanBuyTable ? _settings.TablePrices[TablesOwned - _settings.StartTables] : 0;
-
-        public int NextWaiterPrice => CanHireWaiter ? _settings.WaiterPrices[WaiterLevel] : 0;
-
-        // Seconds between auto-serves; 0 means no waiter hired yet.
-        public float WaiterInterval
+        // The configured prices come first; after that each hire costs 40% more than the last.
+        public int NextWaiterPrice
         {
             get
             {
-                var intervals = _settings.WaiterIntervals;
-                if (WaiterLevel == 0 || intervals.Length == 0)
+                var prices = _settings.WaiterPrices;
+                var hired = _waiters.Count;
+                if (prices == null || prices.Length == 0)
                 {
-                    return 0f;
+                    return FallbackWaiterPrice;
                 }
 
-                return intervals[Mathf.Min(WaiterLevel, intervals.Length) - 1];
+                if (hired < prices.Length)
+                {
+                    return prices[hired];
+                }
+
+                return Mathf.RoundToInt(prices[prices.Length - 1] * Mathf.Pow(PriceGrowth, hired - prices.Length + 1));
             }
         }
 
         public event Action Changed;
 
-        public bool TryBuyTable(EconomyManager economy)
+        public bool TryHireWaiter(EconomyManager economy)
         {
-            if (!CanBuyTable || !economy.TrySpend(NextTablePrice))
+            if (!economy.TrySpend(NextWaiterPrice))
             {
                 return false;
             }
 
-            TablesOwned++;
+            _waiters.Add(new WaiterRecord());
             Changed?.Invoke();
             return true;
         }
 
-        public bool TryHireWaiter(EconomyManager economy)
+        public void Dismiss(WaiterRecord waiter)
         {
-            if (!CanHireWaiter || !economy.TrySpend(NextWaiterPrice))
+            if (_waiters.Remove(waiter))
             {
-                return false;
+                Changed?.Invoke();
             }
+        }
 
-            WaiterLevel++;
+        // After a waiter's name or resting flag was edited.
+        public void NotifyWaiterEdited()
+        {
             Changed?.Invoke();
-            return true;
         }
 
         public void Restore(BarSaveData data)
         {
-            TablesOwned = Mathf.Clamp(data.TablesOwned, _settings.StartTables, MaxTables);
-            WaiterLevel = Mathf.Clamp(data.WaiterLevel, 0, MaxWaiterLevel);
+            _waiters.Clear();
+            if (data.Waiters != null)
+            {
+                _waiters.AddRange(data.Waiters);
+            }
+
+            // Saves from before waiters had names only stored a level.
+            for (var i = _waiters.Count; i < data.WaiterLevel; i++)
+            {
+                _waiters.Add(new WaiterRecord());
+            }
+
             Changed?.Invoke();
         }
     }

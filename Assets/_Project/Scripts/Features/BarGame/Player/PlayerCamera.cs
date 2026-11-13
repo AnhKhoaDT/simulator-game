@@ -9,6 +9,7 @@ namespace Startup.Features.BarGame
     public class PlayerCamera : MonoBehaviour
     {
         private const float EyeHeight = 1.5f;
+        private const float SitEyeHeight = 1.15f;
         private const float PivotHeight = 1.6f;
         private const float ThirdPersonDistance = 3.2f;
         private const float CollisionRadius = 0.2f;
@@ -21,6 +22,8 @@ namespace Startup.Features.BarGame
         private const float NearClip = 0.05f;
         // Customers sit on the Ignore Raycast layer, so they never push the camera in.
         private const int IgnoreRaycastLayer = 2;
+        // Furniture pick volumes (TransparentFX) should not push the camera either.
+        private const int FurniturePickLayer = 1;
 
         private Camera _camera;
         private Transform _target;
@@ -35,6 +38,14 @@ namespace Startup.Features.BarGame
 
         public bool IsFirstPerson => !_thirdPerson;
 
+        // Lowers the eyes while the owner sits.
+        public bool Sitting { get; set; }
+
+        public void SetYaw(float yaw)
+        {
+            Yaw = yaw;
+        }
+
         public void Setup(Camera cam, Transform target, Renderer[] body, TouchControls touch,
             Func<Vector2, bool> isOverUi, float startYaw)
         {
@@ -44,7 +55,7 @@ namespace Startup.Features.BarGame
             _touch = touch;
             _isOverUi = isOverUi;
             Yaw = startYaw;
-            _collisionMask = ~(1 << IgnoreRaycastLayer);
+            _collisionMask = ~((1 << IgnoreRaycastLayer) | (1 << FurniturePickLayer));
 
             cam.orthographic = false;
             cam.fieldOfView = FieldOfView;
@@ -149,7 +160,7 @@ namespace Startup.Features.BarGame
             var rotation = Quaternion.Euler(_pitch, Yaw, 0f);
             if (!_thirdPerson)
             {
-                _camera.transform.SetPositionAndRotation(_target.position + Vector3.up * EyeHeight, rotation);
+                _camera.transform.SetPositionAndRotation(_target.position + Vector3.up * (Sitting ? SitEyeHeight : EyeHeight), rotation);
                 return;
             }
 

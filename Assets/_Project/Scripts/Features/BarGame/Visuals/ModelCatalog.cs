@@ -14,7 +14,8 @@ namespace Startup.Features.BarGame
 
         // Extra yaw if a pack's front turns out to be +Z instead of -Z (set to 180 to flip).
         public const float BuildingYawOffset = 0f;
-        public const float CarYawOffset = 180f;
+        // Car Kit front wheels sit at +Z in every model, so cars already face forward.
+        public const float CarYawOffset = 0f;
 
         public static readonly string[] Houses =
         {

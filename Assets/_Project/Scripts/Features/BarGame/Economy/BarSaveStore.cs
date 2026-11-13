@@ -14,24 +14,32 @@ namespace Startup.Features.BarGame
             _store = store;
         }
 
-        // Restores economy and upgrades; the caller reads the returned data for the clock.
-        public BarSaveData LoadInto(EconomyManager economy, BarUpgrades upgrades)
+        // Restores economy, upgrades and inventory; the caller reads the returned data for the clock and layout.
+        public BarSaveData LoadInto(EconomyManager economy, BarUpgrades upgrades, BarInventory inventory)
         {
             var data = _store.Load(Key, new BarSaveData());
             economy.Restore(data);
             upgrades.Restore(data);
+            inventory.Restore(data.InventoryItems);
             return data;
         }
 
-        public void Save(EconomyManager economy, BarUpgrades upgrades, ShiftClock clock)
+        public void Save(EconomyManager economy, BarUpgrades upgrades, ShiftClock clock, BarFurniture furniture,
+            BarInventory inventory)
         {
             var data = new BarSaveData
             {
+                LayoutSaved = furniture != null,
+                DecorPlacements = furniture != null ? furniture.SnapshotDecor() : new System.Collections.Generic.List<DecorSave>(),
+                InventoryItems = inventory.Snapshot(),
+                TablePlacements = furniture != null ? furniture.SnapshotTables() : new System.Collections.Generic.List<UnityEngine.Vector3>(),
+                ChairPlacements = furniture != null ? furniture.SnapshotChairs() : new System.Collections.Generic.List<UnityEngine.Vector3>(),
                 Money = economy.Money,
                 TotalRevenue = economy.TotalRevenue,
                 CustomersServed = economy.CustomersServed,
-                TablesOwned = upgrades.TablesOwned,
-                WaiterLevel = upgrades.WaiterLevel,
+                WaiterLevel = 0,
+                Waiters = new System.Collections.Generic.List<WaiterRecord>(upgrades.Waiters),
+                DecorSaved = furniture != null,
                 ClockMinutes = clock != null ? clock.TotalMinutes : -1
             };
             _store.Save(Key, data);

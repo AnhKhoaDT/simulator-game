@@ -13,6 +13,7 @@ namespace Startup.Features.BarGame
         private const float TurnSpeedDegrees = 540f;
         private const float MinLookSqrDistance = 0.0001f;
         private const float FoodSize = 0.3f;
+        private const float HandCashSeconds = 0.9f;
 
         private enum State
         {
@@ -23,6 +24,8 @@ namespace Startup.Features.BarGame
             Eating,
             WalkingToCashier,
             WaitingToPay,
+            HandingCash,
+            AwaitingChange,
             Leaving
         }
 
@@ -33,20 +36,45 @@ namespace Startup.Features.BarGame
         private CustomerBubble _bubble;
         private CharacterAnimator _animator;
         private CustomerContext _context;
-        private MenuItem _order;
+        private readonly List<MenuItem> _items = new List<MenuItem>();
+        private Party _party;
         private GameObject _servedFood;
         private BarTable _table;
-        private int _seatIndex = -1;
+        private BarChair _seat;
+        private Action<Customer> _cashReady;
         private int _pathIndex;
         private float _laneZ;
         private float _exitX;
         private State _state;
         private float _timer;
         private float _retryTimer;
+        private float _eatSeconds;
 
         public event Action<Customer> Finished;
 
         public bool IsWaitingForService => _state == State.Ordering;
+
+        // What this customer owes, and the cash they hand over once they have the bill.
+        internal int Bill
+        {
+            get
+            {
+                var total = 0;
+                foreach (var item in _items)
+                {
+                    total += item.Price;
+                }
+
+                return total;
+            }
+        }
+
+        internal IReadOnlyList<MenuItem> Items => _items;
+
+        // A waiter has set off for this customer, so other waiters pick someone else.
+        internal bool IsClaimed { get; set; }
+
+        internal int Cash { get; private set; }
 
         internal bool IsReadyToPay =>
             _state == State.WaitingToPay
@@ -60,12 +88,17 @@ namespace Startup.Features.BarGame
             _animator = animator;
         }
 
-        internal void Begin(CustomerContext context, Vector3 spawnPoint, Vector3 waitPoint, float exitX, Color color)
+        internal void Begin(CustomerContext context, Vector3 spawnPoint, Vector3 waitPoint, float exitX, Color color,
+            Party party = null)
         {
             _context = context;
             _table = null;
-            _order = null;
-            _seatIndex = -1;
+            _items.Clear();
+            _party = party;
+            IsClaimed = false;
+            _seat = null;
+            _cashReady = null;
+            Cash = 0;
             _laneZ = spawnPoint.z;
             _exitX = exitX;
 
@@ -99,7 +132,7 @@ namespace Startup.Features.BarGame
                 return false;
             }
 
-            point = _table.GetApproachPoint(_seatIndex);
+            point = _table.GetApproachPoint(_seat);
             return true;
         }
 
@@ -113,22 +146,38 @@ namespace Startup.Features.BarGame
 
             _bubble.Hide();
             ShowFood();
+            IsClaimed = false;
+            _eatSeconds = EatSeconds() * UnityEngine.Random.Range(0.85f, 1.2f);
             _timer = 0f;
             SetState(State.Eating);
             _context.Orders.NotifyServed();
             return true;
         }
 
-        // Called by the counter when this customer is first in line and someone is collecting.
-        internal void Pay()
+        // The owner hands over the bill; after a moment the customer holds out cash and 'cashReady' fires.
+        internal void ReceiveBill(Action<Customer> cashReady)
         {
             if (_state != State.WaitingToPay)
             {
                 return;
             }
 
+            _cashReady = cashReady;
+            _timer = 0f;
+            _bubble.Hide();
+            SetState(State.HandingCash);
+        }
+
+        // The owner gave the change: the customer pays and walks out.
+        internal void CompletePayment()
+        {
+            if (_state != State.AwaitingChange)
+            {
+                return;
+            }
+
             _context.Counter.Leave(this);
-            _context.Orders.Complete(_order);
+            _context.Orders.CompleteOrder(_items);
             _bubble.Hide();
             StartLeaving(null);
         }
@@ -173,6 +222,12 @@ namespace Startup.Features.BarGame
                 case State.WaitingToPay:
                     UpdateWaitingToPay();
                     break;
+                case State.HandingCash:
+                    UpdateHandingCash();
+                    break;
+                case State.AwaitingChange:
+                    FaceTowards(_context.Layout.CounterCenter);
+                    break;
                 case State.Leaving:
                     if (FollowPath())
                     {
@@ -191,7 +246,7 @@ namespace Startup.Features.BarGame
             if (_retryTimer <= 0f)
             {
                 _retryTimer = RetryInterval;
-                if (_context.Seating.TryReserve(transform.position, out _table, out _seatIndex))
+                if (TryGetSeat())
                 {
                     WalkToSeat();
                     return;
@@ -200,16 +255,35 @@ namespace Startup.Features.BarGame
 
             if (_timer >= _context.Settings.WaitForSeatSeconds)
             {
+                _party?.Abandon(this);
                 _context.Orders.NotifyAbandoned();
                 StartLeaving(null);
             }
         }
 
+        // A lone guest takes the nearest free chair; a group waits until one table can seat all of them.
+        private bool TryGetSeat()
+        {
+            if (_party == null)
+            {
+                return _context.Seating.TryReserve(transform.position, out _table, out _seat);
+            }
+
+            if (!_party.TryAssign(_context.Seating, transform.position))
+            {
+                return false;
+            }
+
+            _table = _party.Table;
+            _seat = _party.Claim(this);
+            return _seat != null;
+        }
+
         private void WalkToSeat()
         {
             _path.Clear();
-            PathPlanner.Plan(transform.position, _table.GetApproachPoint(_seatIndex), _context.Seating.Obstacles, _path);
-            _path.Add(_table.GetSeatPosition(_seatIndex));
+            PathPlanner.Plan(transform.position, _table.GetApproachPoint(_seat), _context.Seating.Obstacles, _path);
+            _path.Add(SeatPose.BodyPosition(_seat));
             _pathIndex = 0;
             SetState(State.WalkingToSeat);
         }
@@ -217,16 +291,44 @@ namespace Startup.Features.BarGame
         private void Sit()
         {
             FaceTowards(_table.transform.position);
-            _order = _context.Orders.PickItem();
-            if (_order == null)
+            if (!PickItems())
             {
                 StandUpAndLeave();
                 return;
             }
 
-            _bubble.ShowOrder(_order.Shape);
+            _bubble.ShowOrder(_items[0].Shape);
             _timer = 0f;
             SetState(State.Ordering);
+        }
+
+        // Most guests order one or two dishes, a few order the full limit.
+        private bool PickItems()
+        {
+            var count = UnityEngine.Random.value < 0.5f ? 1 : UnityEngine.Random.Range(1, _context.Settings.MaxItemsPerGuest + 1);
+            for (var i = 0; i < count; i++)
+            {
+                var item = _context.Orders.PickItem();
+                if (item == null)
+                {
+                    break;
+                }
+
+                _items.Add(item);
+            }
+
+            return _items.Count > 0;
+        }
+
+        private float EatSeconds()
+        {
+            var total = 0f;
+            foreach (var item in _items)
+            {
+                total += item.EatSeconds;
+            }
+
+            return total * _context.Settings.EatTimeMultiplier;
         }
 
         private void UpdateOrdering()
@@ -246,7 +348,7 @@ namespace Startup.Features.BarGame
         private void UpdateEating()
         {
             _timer += Time.deltaTime;
-            if (_timer >= _order.EatSeconds)
+            if (_timer >= _eatSeconds)
             {
                 GoToCashier();
             }
@@ -296,10 +398,25 @@ namespace Startup.Features.BarGame
             }
         }
 
+        private void UpdateHandingCash()
+        {
+            FaceTowards(_context.Layout.CounterCenter);
+            _timer += Time.deltaTime;
+            if (_timer < HandCashSeconds)
+            {
+                return;
+            }
+
+            Cash = CashDenominations.CustomerCash(Bill);
+            SetState(State.AwaitingChange);
+            _cashReady?.Invoke(this);
+        }
+
         private Vector3 StandUp()
         {
-            var approach = _table.GetApproachPoint(_seatIndex);
-            _table.Release(_seatIndex);
+            var approach = _table.GetApproachPoint(_seat);
+            _seat.Release();
+            _seat = null;
             _table = null;
             return approach;
         }
@@ -333,13 +450,14 @@ namespace Startup.Features.BarGame
 
         private void ShowFood()
         {
-            if (!_food.TryGetValue(_order.Shape, out var food))
+            var shape = _items[0].Shape;
+            if (!_food.TryGetValue(shape, out var food))
             {
-                food = ItemVisuals.Build(_order.Shape, transform, FoodSize);
-                _food[_order.Shape] = food;
+                food = ItemVisuals.Build(shape, transform, FoodSize);
+                _food[shape] = food;
             }
 
-            food.transform.SetPositionAndRotation(_table.GetFoodPoint(_seatIndex), Quaternion.identity);
+            food.transform.SetPositionAndRotation(_table.GetFoodPoint(_seat), Quaternion.identity);
             food.SetActive(true);
             _servedFood = food;
         }
@@ -371,6 +489,8 @@ namespace Startup.Features.BarGame
                     break;
                 case State.WaitingForSeat:
                 case State.WaitingToPay:
+                case State.HandingCash:
+                case State.AwaitingChange:
                     _animator.PlayIdle();
                     break;
                 case State.Ordering:

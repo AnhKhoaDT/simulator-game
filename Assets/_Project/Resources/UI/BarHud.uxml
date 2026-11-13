@@ -14,37 +14,66 @@
             <ui:VisualElement name="actions" class="actions" picking-mode="Ignore">
                 <ui:Button name="btn-open" class="hud-btn hud-btn--open" />
                 <ui:Button name="btn-close" class="hud-btn hud-btn--close" />
+                <ui:Button name="btn-inventory" class="hud-btn" />
                 <ui:Button name="btn-shop" class="hud-btn" />
                 <ui:Button name="btn-pause" class="hud-btn" />
             </ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="crosshair" class="crosshair" picking-mode="Ignore" />
+        <ui:VisualElement name="decor-prompt" class="decor-prompt" picking-mode="Ignore">
+            <ui:Label name="decor-pick-table" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-pick-chair" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-pick-item" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-pick-seat" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-pick-waiter" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-busy" class="decor-chip decor-chip--warn" picking-mode="Ignore" />
+            <ui:Label name="decor-carry-table" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-carry-chair" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-carry-item" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="decor-blocked" class="decor-chip decor-chip--warn" picking-mode="Ignore" />
+            <ui:Label name="decor-sitting" class="decor-chip" picking-mode="Ignore" />
+            <ui:Label name="cashier-give-bill" class="decor-chip decor-chip--cashier" picking-mode="Ignore" />
+        </ui:VisualElement>
         <ui:VisualElement name="hint-bar" class="hint-bar" picking-mode="Ignore">
-            <ui:Label name="hint-pc" class="hint" picking-mode="Ignore" />
-            <ui:Label name="hint-touch" class="hint" picking-mode="Ignore" />
         </ui:VisualElement>
 
-        <ui:VisualElement name="shop-overlay" class="pause-overlay">
-            <ui:VisualElement class="pause-panel shop-panel">
-                <ui:Label name="shop-title" class="pause-title" />
-                <ui:VisualElement class="shop-row">
-                    <ui:VisualElement class="shop-heading">
-                        <ui:Label name="table-name" class="shop-name" />
-                        <ui:Label name="table-info" class="shop-info" />
-                        <ui:Label name="table-maxed" class="shop-info" />
+        <ui:VisualElement name="shop-overlay" class="screen-overlay" />
+        <ui:VisualElement name="inventory-overlay" class="screen-overlay" />
+
+        <ui:VisualElement name="payment-overlay" class="pause-overlay">
+            <ui:VisualElement class="pay-card">
+                <ui:VisualElement class="pay-receipt">
+                    <ui:Label name="pay-title" class="receipt-title" />
+                    <ui:VisualElement class="receipt-rule" />
+                    <ui:VisualElement name="pay-lines" class="receipt-lines" />
+                    <ui:VisualElement class="receipt-rule" />
+                    <ui:VisualElement class="receipt-line">
+                        <ui:Label name="pay-total-label" class="receipt-name receipt-strong" />
+                        <ui:Label name="pay-total" class="receipt-amount receipt-strong" />
                     </ui:VisualElement>
-                    <ui:Button name="btn-buy-table" class="hud-btn" />
-                </ui:VisualElement>
-                <ui:VisualElement class="shop-row">
-                    <ui:VisualElement class="shop-heading">
-                        <ui:Label name="waiter-name" class="shop-name" />
-                        <ui:Label name="waiter-info" class="shop-info" />
-                        <ui:Label name="waiter-maxed" class="shop-info" />
+                    <ui:VisualElement class="receipt-line">
+                        <ui:Label name="pay-cash-label" class="receipt-name" />
+                        <ui:Label name="pay-cash" class="receipt-amount" />
                     </ui:VisualElement>
-                    <ui:Button name="btn-buy-waiter" class="hud-btn" />
+                    <ui:VisualElement class="receipt-line">
+                        <ui:Label name="pay-change-label" class="receipt-name" />
+                        <ui:Label name="pay-change" class="receipt-amount" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Button name="btn-shop-close" class="hud-btn" />
+                <ui:VisualElement class="pay-register">
+                    <ui:Label name="pay-register-title" class="pay-register-title" />
+                    <ui:Label name="pay-due" class="pay-due" />
+                    <ui:Label name="pay-given" class="pay-line" />
+                    <ui:Label name="pay-short" class="pay-warn" />
+                    <ui:Label name="pay-over" class="pay-warn" />
+                    <ui:VisualElement name="pay-notes" class="pay-notes" />
+                    <ui:VisualElement class="pay-actions">
+                        <ui:Button name="btn-pay-clear" class="hud-btn" />
+                        <ui:Button name="btn-pay-confirm" class="hud-btn hud-btn--open pay-confirm" />
+                    </ui:VisualElement>
+                    <ui:Label name="pay-hint" class="pay-hint" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
 

@@ -14,5 +14,12 @@ namespace Startup.Features.BarGame
         [Min(1f)] public float WaitForSeatSeconds = 10f;
         [Tooltip("How long a customer waits at the cashier before leaving without paying.")]
         [Min(1f)] public float WaitToPaySeconds = 25f;
+        [Tooltip("Eating time is the menu item's time multiplied by this, so a meal lasts a while.")]
+        [Min(1f)] public float EatTimeMultiplier = 5f;
+        [Tooltip("Most dishes a single guest orders.")]
+        [Range(1, 5)] public int MaxItemsPerGuest = 3;
+        [Tooltip("Chance that an arrival is a group of friends.")]
+        [Range(0f, 1f)] public float GroupChance = 0.4f;
+        [Range(2, 6)] public int MaxGroupSize = 4;
     }
 }

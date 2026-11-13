@@ -13,6 +13,7 @@ namespace Startup.Core.UI
             { LocKeys.TutServeTitle, LocKeys.TutServeBody },
             { LocKeys.TutCashierTitle, LocKeys.TutCashierBody },
             { LocKeys.TutShopTitle, LocKeys.TutShopBody },
+            { LocKeys.TutDecorTitle, LocKeys.TutDecorBody },
             { LocKeys.TutViewTitle, LocKeys.TutViewBody }
         };
 

@@ -1,3 +1,4 @@
+using System;
 using Startup.Shared;
 using UnityEngine;
 using UnityEngine.Localization;
@@ -10,6 +11,9 @@ namespace Startup.Core.Localization
     {
         private static ILanguagePreference _preference;
 
+        // Raised after the locale changes, so text built from numbers (money) can be rebuilt.
+        public static event Action LanguageChanged;
+
         public static string CurrentCode
         {
             get
@@ -19,14 +23,10 @@ namespace Startup.Core.Localization
             }
         }
 
-        // Safe to call from every scene; only the first call applies the saved language.
+        // Call from every scene: it always re-applies the saved language. Static fields survive between Play
+        // sessions when domain reload is off, so an "only once" guard would skip the saved choice.
         public static void Initialize(ILanguagePreference preference)
         {
-            if (_preference != null)
-            {
-                return;
-            }
-
             if (!LocalizationSettings.HasSettings)
             {
                 Debug.LogError("No Localization Settings asset found. Run the menu 'Startup/Setup Localization'.");
@@ -78,6 +78,7 @@ namespace Startup.Core.Localization
             }
 
             LocalizationSettings.SelectedLocale = locale;
+            LanguageChanged?.Invoke();
             if (save && _preference != null)
             {
                 _preference.Save(code);

@@ -247,6 +247,442 @@ MonoBehaviour:
     m_Key: tut_view_body
     m_Metadata:
       m_Items: []
+  - m_Id: 1008963355881472
+    m_Key: decor_pick
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047296
+    m_Key: decor_busy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047297
+    m_Key: decor_carry
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047298
+    m_Key: decor_blocked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047299
+    m_Key: tut_decor_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047300
+    m_Key: tut_decor_body
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313137872896
+    m_Key: decor_pick_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038720
+    m_Key: decor_pick_chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038721
+    m_Key: decor_carry_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038722
+    m_Key: decor_carry_chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233024
+    m_Key: decor_reason_wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233025
+    m_Key: decor_reason_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233026
+    m_Key: decor_reason_door
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233027
+    m_Key: decor_reason_queue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233028
+    m_Key: decor_reason_staff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233029
+    m_Key: decor_reason_decor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233030
+    m_Key: decor_reason_counter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233031
+    m_Key: decor_reason_owner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233032
+    m_Key: decor_reason_chair_far
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233033
+    m_Key: decor_reason_chair_close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233034
+    m_Key: decor_reason_chair_crowded
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1021401182711808
+    m_Key: decor_reason_chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1021401203683328
+    m_Key: decor_reason_under_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491751194624
+    m_Key: shop_btn_buy_price
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554752
+    m_Key: shop_owned
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554753
+    m_Key: hud_btn_inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554754
+    m_Key: inv_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554755
+    m_Key: inv_empty
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554756
+    m_Key: inv_count
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554757
+    m_Key: inv_btn_place
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554758
+    m_Key: pay_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554759
+    m_Key: pay_bill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749056
+    m_Key: pay_cash
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749057
+    m_Key: pay_due
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749058
+    m_Key: pay_given
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749059
+    m_Key: pay_short
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749060
+    m_Key: pay_over
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749061
+    m_Key: pay_clear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749062
+    m_Key: pay_confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749063
+    m_Key: pay_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749064
+    m_Key: cashier_give_bill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749065
+    m_Key: decor_pick_item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749066
+    m_Key: decor_carry_item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749067
+    m_Key: decor_reason_item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749068
+    m_Key: shop_cat_seating
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749069
+    m_Key: shop_cat_plants
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749070
+    m_Key: shop_cat_lighting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749071
+    m_Key: shop_cat_rugs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749072
+    m_Key: shop_cat_storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749073
+    m_Key: shop_cat_appliances
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749074
+    m_Key: shop_cat_electronics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749075
+    m_Key: shop_cat_staff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749076
+    m_Key: shop_item_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749077
+    m_Key: shop_item_chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749078
+    m_Key: shop_item_bench
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749079
+    m_Key: shop_item_sofa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749080
+    m_Key: shop_item_armchair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749081
+    m_Key: shop_item_plant_big
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749082
+    m_Key: shop_item_plant_small_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749083
+    m_Key: shop_item_plant_small_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749084
+    m_Key: shop_item_plant_small_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749085
+    m_Key: shop_item_lamp_round
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749086
+    m_Key: shop_item_lamp_square
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749087
+    m_Key: shop_item_rug_rect
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749088
+    m_Key: shop_item_rug_round
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749089
+    m_Key: shop_item_rug_square
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749090
+    m_Key: shop_item_doormat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749091
+    m_Key: shop_item_bookcase_open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749092
+    m_Key: shop_item_bookcase_closed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749093
+    m_Key: shop_item_side_table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749094
+    m_Key: shop_item_tv_cabinet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749095
+    m_Key: shop_item_coat_rack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749096
+    m_Key: shop_item_trashcan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749097
+    m_Key: shop_item_fridge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749098
+    m_Key: shop_item_freezer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749099
+    m_Key: shop_item_display_case
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749100
+    m_Key: shop_item_stove
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749101
+    m_Key: shop_item_sink
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749102
+    m_Key: shop_item_kitchen_cabinet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749103
+    m_Key: shop_item_tv
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749104
+    m_Key: shop_item_speaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1035702878547968
+    m_Key: inv_cat_all
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413307981824
+    m_Key: hint_toggle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147648
+    m_Key: hint_move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147649
+    m_Key: hint_interact
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147650
+    m_Key: hint_sit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147651
+    m_Key: hint_store
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147652
+    m_Key: hint_rotate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147653
+    m_Key: hint_inventory
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147654
+    m_Key: hint_shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147655
+    m_Key: hint_open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147656
+    m_Key: hint_view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147657
+    m_Key: hint_cursor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147658
+    m_Key: hint_pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147659
+    m_Key: decor_pick_seat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147660
+    m_Key: decor_pick_waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147661
+    m_Key: decor_sitting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147662
+    m_Key: staff_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147663
+    m_Key: staff_name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147664
+    m_Key: staff_status_working
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147665
+    m_Key: staff_status_resting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147666
+    m_Key: staff_btn_rest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147667
+    m_Key: staff_btn_work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147668
+    m_Key: staff_btn_dismiss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147669
+    m_Key: staff_rest_hint
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147670
+    m_Key: pay_receipt
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147671
+    m_Key: pay_total
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147672
+    m_Key: pay_cash_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147673
+    m_Key: pay_change_label
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

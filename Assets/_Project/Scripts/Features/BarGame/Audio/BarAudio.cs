@@ -32,7 +32,7 @@ namespace Startup.Features.BarGame
             _click = Resources.Load<AudioClip>(Folder + "sfx_click");
 
             _orders.Served += OnServed;
-            _orders.Completed += OnCompleted;
+            _orders.Paid += OnPaid;
             _orders.Abandoned += OnAbandoned;
             _orders.ItemUnlocked += OnItemUnlocked;
             _upgrades.Changed += OnUpgradeBought;
@@ -46,7 +46,7 @@ namespace Startup.Features.BarGame
             }
 
             _orders.Served -= OnServed;
-            _orders.Completed -= OnCompleted;
+            _orders.Paid -= OnPaid;
             _orders.Abandoned -= OnAbandoned;
             _orders.ItemUnlocked -= OnItemUnlocked;
             _upgrades.Changed -= OnUpgradeBought;
@@ -57,7 +57,7 @@ namespace Startup.Features.BarGame
             Play(_serve);
         }
 
-        private void OnCompleted(MenuItem item)
+        private void OnPaid(int total, System.Collections.Generic.IReadOnlyList<MenuItem> items)
         {
             Play(_coin);
         }

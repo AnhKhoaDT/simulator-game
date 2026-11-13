@@ -1,128 +1,84 @@
 using System;
+using System.Collections.Generic;
 using Startup.Core.Localization;
 using UnityEngine.UIElements;
 
 namespace Startup.Features.BarGame
 {
-    // Shop overlay: one row per upgrade with a localized name, price info and a buy button.
-    public sealed class ShopPanel : IDisposable
+    // The shop screen: furniture by category with a picture and price, plus the waiter under Staff.
+    // Bought furniture goes into the inventory.
+    public sealed class ShopPanel : CatalogScreen
     {
-        private readonly LocalizedBindings _bindings = new LocalizedBindings();
+        private const string WaiterId = "waiter";
+        private const string WaiterModel = CustomerFactory.ModelFolder + "q";
+
         private readonly EconomyManager _economy;
         private readonly BarUpgrades _upgrades;
-        private readonly VisualElement _overlay;
-        private readonly Button _closeButton;
-        private readonly UpgradeRow _tableRow;
-        private readonly UpgradeRow _waiterRow;
+        private readonly BarInventory _inventory;
 
-        public ShopPanel(VisualElement root, EconomyManager economy, BarUpgrades upgrades)
+        public ShopPanel(VisualElement root, EconomyManager economy, BarUpgrades upgrades, BarInventory inventory)
+            : base(root, "shop-overlay")
         {
             _economy = economy;
             _upgrades = upgrades;
-            _overlay = root.Q<VisualElement>("shop-overlay");
+            _inventory = inventory;
 
-            _bindings.Bind(root.Q<Label>("shop-title"), LocKeys.ShopTitle);
-            _closeButton = root.Q<Button>("btn-shop-close");
-            _bindings.Bind(_closeButton, LocKeys.CommonClose);
-            _closeButton.clicked += Close;
+            var entries = new List<Entry>();
+            foreach (var def in FurnitureCatalog.All)
+            {
+                entries.Add(new Entry(def.Id, def.NameKey, def.Category, def.ModelPath, def));
+            }
 
-            _tableRow = new UpgradeRow(root, "table", LocKeys.ShopUpgradeTable, LocKeys.ShopInfoTable, _bindings);
-            _waiterRow = new UpgradeRow(root, "waiter", LocKeys.ShopUpgradeWaiter, LocKeys.ShopInfoWaiter, _bindings);
-            _tableRow.BuyClicked += BuyTable;
-            _waiterRow.BuyClicked += HireWaiter;
+            entries.Add(new Entry(WaiterId, LocKeys.ShopUpgradeWaiter, ShopCategory.Staff, WaiterModel));
+            Build(LocKeys.ShopTitle, LocKeys.InvEmpty, false, LocKeys.ShopBtnBuyPrice, true, entries,
+                (ShopCategory[])Enum.GetValues(typeof(ShopCategory)));
 
             _economy.Changed += Refresh;
             _upgrades.Changed += Refresh;
-            Refresh();
+            _inventory.Changed += Refresh;
         }
 
-        public event Action Closed;
-
-        public void Open()
-        {
-            _overlay.style.display = DisplayStyle.Flex;
-            Refresh();
-        }
-
-        public void Close()
-        {
-            _overlay.style.display = DisplayStyle.None;
-            Closed?.Invoke();
-        }
-
-        public void Dispose()
+        public override void Dispose()
         {
             _economy.Changed -= Refresh;
             _upgrades.Changed -= Refresh;
-            _closeButton.clicked -= Close;
-            _tableRow.BuyClicked -= BuyTable;
-            _waiterRow.BuyClicked -= HireWaiter;
-            _tableRow.Dispose();
-            _waiterRow.Dispose();
-            _bindings.Dispose();
+            _inventory.Changed -= Refresh;
+            base.Dispose();
         }
 
-        private void BuyTable()
+        protected override bool IsListed(Entry entry)
         {
-            _upgrades.TryBuyTable(_economy);
+            return true;
         }
 
-        private void HireWaiter()
+        protected override string Badge(Entry entry)
         {
-            _upgrades.TryHireWaiter(_economy);
+            return Money.Format(entry.Def != null ? entry.Def.Price : _upgrades.NextWaiterPrice);
         }
 
-        private void Refresh()
+        protected override void UpdateDetail(Entry entry)
         {
-            _tableRow.Show(_upgrades.CanBuyTable, _upgrades.NextTablePrice, _economy.Money,
-                new object[] { _upgrades.TablesOwned, _upgrades.MaxTables, _upgrades.NextTablePrice });
-            _waiterRow.Show(_upgrades.CanHireWaiter, _upgrades.NextWaiterPrice, _economy.Money,
-                new object[] { _upgrades.WaiterLevel, _upgrades.MaxWaiterLevel, _upgrades.NextWaiterPrice });
-        }
-
-        // One row of the shop UI (name, info, maxed label, buy button).
-        private sealed class UpgradeRow : IDisposable
-        {
-            private readonly VisualElement _info;
-            private readonly VisualElement _maxed;
-            private readonly Button _buy;
-            private readonly Action<object[]> _setInfo;
-
-            public UpgradeRow(VisualElement root, string id, string nameKey, string infoKey, LocalizedBindings bindings)
+            SetWallet(_economy.Money);
+            if (entry.Def != null)
             {
-                bindings.Bind(root.Q<Label>(id + "-name"), nameKey);
-                _info = root.Q<Label>(id + "-info");
-                _setInfo = bindings.BindWithArgs(_info as Label, infoKey, new object[] { 0, 0, 0 });
-                _maxed = root.Q<Label>(id + "-maxed");
-                bindings.Bind(_maxed as Label, LocKeys.ShopMaxed);
-                _buy = root.Q<Button>("btn-buy-" + id);
-                bindings.Bind(_buy, LocKeys.ShopBtnBuy);
-                _buy.clicked += OnBuyClicked;
+                ShowOwned(_inventory.Count(entry.Id));
+                SetAction(true, _economy.Money >= entry.Def.Price, entry.Def.Price);
+                return;
             }
 
-            public event Action BuyClicked;
+            ShowStaff(_upgrades.Waiters.Count);
+            SetAction(true, _economy.Money >= _upgrades.NextWaiterPrice, _upgrades.NextWaiterPrice);
+        }
 
-            public void Show(bool canBuy, int price, int money, object[] infoArgs)
+        protected override void OnAction(Entry entry)
+        {
+            if (entry.Def == null)
             {
-                _info.style.display = canBuy ? DisplayStyle.Flex : DisplayStyle.None;
-                _buy.style.display = canBuy ? DisplayStyle.Flex : DisplayStyle.None;
-                _maxed.style.display = canBuy ? DisplayStyle.None : DisplayStyle.Flex;
-
-                if (canBuy)
-                {
-                    _setInfo(infoArgs);
-                    _buy.SetEnabled(money >= price);
-                }
+                _upgrades.TryHireWaiter(_economy);
             }
-
-            public void Dispose()
+            else if (_economy.TrySpend(entry.Def.Price))
             {
-                _buy.clicked -= OnBuyClicked;
-            }
-
-            private void OnBuyClicked()
-            {
-                BuyClicked?.Invoke();
+                _inventory.Add(entry.Id);
             }
         }
     }

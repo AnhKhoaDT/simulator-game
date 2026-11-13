@@ -7,6 +7,7 @@ namespace Startup.Data
     {
         public const string OwnerNameKey = "profile_owner_name";
         public const string TutorialSeenKey = "profile_tutorial_seen";
+        public const string HintHiddenKey = "profile_hint_hidden";
 
         private readonly IDataStore _store;
 
@@ -33,6 +34,16 @@ namespace Startup.Data
         public void SaveTutorialSeen()
         {
             _store.Save(TutorialSeenKey, true);
+        }
+
+        public bool LoadHintHidden()
+        {
+            return _store.Load(HintHiddenKey, false);
+        }
+
+        public void SaveHintHidden(bool hidden)
+        {
+            _store.Save(HintHiddenKey, hidden);
         }
     }
 }

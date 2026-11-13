@@ -33,6 +33,18 @@ namespace Startup.Features.BarGame
             return true;
         }
 
+        // Change given back to a customer comes out of the till; revenue totals are left alone.
+        public void Refund(int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            Money = Math.Max(0, Money - amount);
+            Changed?.Invoke();
+        }
+
         public void Earn(int amount)
         {
             if (amount <= 0)

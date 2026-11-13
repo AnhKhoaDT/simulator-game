@@ -12,6 +12,8 @@ namespace Startup.Features.BarGame
         private const float LaneSpread = 0.5f;
         private const float WaitSpreadX = 0.4f;
         private const float WaitInside = 0.9f;
+        private const float GroupSpacing = 0.8f;
+        private const float GroupLaneJitter = 0.2f;
         // Guests appear part-way down the street so they do not take ages to arrive.
         private const float SpawnDistanceRatio = 0.6f;
 
@@ -61,7 +63,7 @@ namespace Startup.Features.BarGame
         {
             for (var i = 0; i < _active.Count; i++)
             {
-                if (_active[i].IsWaitingForService)
+                if (_active[i].IsWaitingForService && !_active[i].IsClaimed)
                 {
                     return _active[i];
                 }
@@ -89,18 +91,40 @@ namespace Startup.Features.BarGame
             Spawn();
         }
 
+        // One walk-in, or a group of friends who sit together.
         private void Spawn()
         {
             var layout = _context.Layout;
-            var customer = _pool.Count > 0 ? _pool.Pop() : CreateCustomer();
-
+            var size = PickGroupSize();
+            var party = size > 1 ? new Party() : null;
+            var side = RandomSide();
             var lane = layout.SidewalkZ + Random.Range(-LaneSpread, LaneSpread);
-            var spawn = new Vector3(RandomSide() * BarLayout.StreetHalfLength * SpawnDistanceRatio, 0f, lane);
-            var wait = layout.DoorInside + new Vector3(Random.Range(-WaitSpreadX, WaitSpreadX), 0f, WaitInside);
             var exitX = RandomSide() * BarLayout.StreetHalfLength;
 
-            customer.Begin(_context, spawn, wait, exitX, Palette[Random.Range(0, Palette.Length)]);
-            _active.Add(customer);
+            for (var i = 0; i < size; i++)
+            {
+                var customer = _pool.Count > 0 ? _pool.Pop() : CreateCustomer();
+                var x = side * BarLayout.StreetHalfLength * SpawnDistanceRatio - side * i * GroupSpacing;
+                var spawn = new Vector3(x, 0f, lane + Random.Range(-GroupLaneJitter, GroupLaneJitter));
+                var wait = layout.DoorInside + new Vector3(Random.Range(-WaitSpreadX, WaitSpreadX), 0f, WaitInside);
+                party?.Add(customer);
+                customer.Begin(_context, spawn, wait, exitX, Palette[Random.Range(0, Palette.Length)], party);
+                _active.Add(customer);
+            }
+        }
+
+        // Groups need a table that can seat them all, and room under the active-guest limit.
+        private int PickGroupSize()
+        {
+            var settings = _context.Settings;
+            var room = settings.MaxActive - _active.Count;
+            var limit = Mathf.Min(settings.MaxGroupSize, _context.Seating.MaxSeatsAtOneTable, room);
+            if (limit < 2 || Random.value >= settings.GroupChance)
+            {
+                return 1;
+            }
+
+            return Random.Range(2, limit + 1);
         }
 
         private Customer CreateCustomer()

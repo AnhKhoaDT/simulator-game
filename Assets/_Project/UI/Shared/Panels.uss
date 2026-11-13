@@ -19,9 +19,11 @@
     max-height: 85%;
     padding: var(--space-l);
     background-color: var(--color-bg);
-    border-radius: 16px;
+    border-radius: 18px;
     border-width: 1px;
+    border-top-width: 3px;
     border-color: rgba(255, 255, 255, 0.08);
+    border-top-color: var(--color-accent);
     align-items: stretch;
 }
 
@@ -130,4 +132,13 @@
 .panel-btn--secondary:hover {
     background-color: rgba(255, 255, 255, 0.12);
     color: var(--color-text);
+}
+
+.panel-btn--danger {
+    background-color: rgb(140, 50, 45);
+    color: rgb(255, 235, 230);
+}
+
+.panel-btn--danger:hover {
+    background-color: rgb(165, 64, 58);
 }

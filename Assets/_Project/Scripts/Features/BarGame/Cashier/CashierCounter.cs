@@ -3,10 +3,9 @@ using UnityEngine;
 
 namespace Startup.Features.BarGame
 {
-    // Pay counter: customers queue in front of it and pay one by one while someone stands behind it.
+    // Pay counter: customers queue in front of it; whoever stands behind it serves them one by one.
     public class CashierCounter : MonoBehaviour
     {
-        private const float PaySeconds = 0.6f;
         private const float SpotSpacing = 0.8f;
         private const float AttendRadius = 0.9f;
         private const float TopThickness = 0.08f;
@@ -30,7 +29,6 @@ namespace Startup.Features.BarGame
         private Vector3 _queueDirection;
         private Renderer _marker;
         private bool _attended;
-        private float _timer;
 
         public Rect Footprint { get; private set; }
 
@@ -69,10 +67,6 @@ namespace Startup.Features.BarGame
             }
 
             _queue.RemoveAt(index);
-            if (index == 0)
-            {
-                _timer = 0f;
-            }
         }
 
         // Where this customer should stand; customers not yet in the queue get the next free spot.
@@ -87,21 +81,12 @@ namespace Startup.Features.BarGame
             return _firstSpot + _queueDirection * (SpotSpacing * index);
         }
 
+        // The customer at the front who stands at the counter waiting for a bill, if someone is behind the counter.
+        internal Customer NextToServe => _attended && _queue.Count > 0 && _queue[0].IsReadyToPay ? _queue[0] : null;
+
         private void Update()
         {
             SetAttended(IsAttended());
-            if (!_attended || _queue.Count == 0 || !_queue[0].IsReadyToPay)
-            {
-                _timer = 0f;
-                return;
-            }
-
-            _timer += Time.deltaTime;
-            if (_timer >= PaySeconds)
-            {
-                _timer = 0f;
-                _queue[0].Pay();
-            }
         }
 
         private bool IsAttended()

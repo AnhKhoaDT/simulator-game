@@ -8,5 +8,8 @@ namespace Startup.Shared
         void SaveOwnerName(string name);
         bool LoadTutorialSeen();
         void SaveTutorialSeen();
+        // Whether the player hid the on-screen key hint (H).
+        bool LoadHintHidden();
+        void SaveHintHidden(bool hidden);
     }
 }

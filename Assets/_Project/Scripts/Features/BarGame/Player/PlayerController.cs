@@ -12,6 +12,7 @@ namespace Startup.Features.BarGame
         private const float ServeRadius = 1.6f;
         private const float TurnSpeedDegrees = 720f;
         private const float MinInput = 0.1f;
+        private const float StandDistance = 0.8f;
         private const float MarkerSize = 0.8f;
         private const float MarkerHeight = 0.01f;
 
@@ -24,8 +25,12 @@ namespace Startup.Features.BarGame
         private PlayerCamera _view;
         private TouchControls _touch;
         private CharacterAnimator _animator;
+        private ISeat _seat;
+        private int _standFrame = -1;
         private float _speed;
         private bool _moving;
+
+        public bool IsSitting => _seat != null;
 
         // Everything the camera hides in first person.
         public Renderer[] BodyRenderers { get; private set; }
@@ -57,6 +62,17 @@ namespace Startup.Features.BarGame
 
             var input = ReadInput();
             var moving = input.sqrMagnitude > MinInput * MinInput;
+            if (IsSitting)
+            {
+                var keyboard = Keyboard.current;
+                if (moving || (keyboard != null && keyboard.fKey.wasPressedThisFrame))
+                {
+                    StandUp();
+                }
+
+                return;
+            }
+
             if (moving)
             {
                 Move(input);
@@ -68,6 +84,55 @@ namespace Startup.Features.BarGame
 
             SetMoving(moving);
             _spawner.ServeNear(transform.position, ServeRadius);
+        }
+
+        // Sits on a free seat: the body snaps onto it, the view drops to seated eye level.
+        public bool TrySit(ISeat seat)
+        {
+            if (IsSitting || !seat.IsFree || _standFrame == Time.frameCount)
+            {
+                return false;
+            }
+
+            _seat = seat;
+            seat.Occupy();
+            transform.SetPositionAndRotation(SeatPose.BodyPosition(seat), seat.SitRotation);
+            _animator?.PlaySit();
+            _moving = false;
+            _view.Sitting = true;
+            _view.SetYaw(seat.SitRotation.eulerAngles.y);
+            return true;
+        }
+
+        private void StandUp()
+        {
+            var facing = _seat.SitRotation;
+            var sitPoint = _seat.SitPoint;
+            _seat.Vacate();
+            _seat = null;
+            _standFrame = Time.frameCount;
+            _view.Sitting = false;
+            transform.position = FindStandPoint(sitPoint, facing);
+            _animator?.PlayIdle();
+        }
+
+        // In front of the seat if free, otherwise to a side or behind it.
+        private Vector3 FindStandPoint(Vector3 sitPoint, Quaternion facing)
+        {
+            var directions = new[] { Vector3.forward, Vector3.right, Vector3.left, Vector3.back };
+            foreach (var direction in directions)
+            {
+                var candidate = sitPoint + facing * direction * StandDistance;
+                candidate.y = 0f;
+                if (_layout.IsWalkable(candidate, Radius, _furniture) && _layout.IsWalkable(candidate, Radius, _props))
+                {
+                    return candidate;
+                }
+            }
+
+            var fallback = sitPoint + facing * Vector3.forward * StandDistance;
+            fallback.y = 0f;
+            return fallback;
         }
 
         // Joystick and keyboard share one direction: x = right, y = forward.

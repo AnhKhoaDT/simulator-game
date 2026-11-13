@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Startup.Features.BarGame
 {
-    // Table with 4 seats, built from imported models when present, otherwise from primitives.
+    // Builds a table and, separately, chairs, from imported models when present, otherwise from primitives.
     internal static class TableBuilder
     {
         private const string TableModelPath = "Models/Furniture/table";
@@ -13,17 +13,22 @@ namespace Startup.Features.BarGame
         private const float TopThickness = 0.1f;
         private const float LegSize = 0.1f;
         private const float LegInset = 0.6f;
-        private const float SeatOffset = 1.1f;
         private const float SeatSize = 0.5f;
         private const float SeatThickness = 0.08f;
-        private const float SeatHeight = 0.45f;
         private const float ChairHeight = 0.9f;
+
         // Rotates the chair model if its front does not face +Z.
-        private const float ChairYawOffset = 180f;
+        public const float ChairYawOffset = 180f;
+        public const float TopHalfSize = TopSize * 0.5f;
+        public const float ChairHalfSize = SeatSize * 0.5f;
+        public const float SeatHeight = 0.45f;
+        // Where a new table's four chairs go, measured from the table center.
+        public const float DefaultSeatDistance = 1.1f;
 
         private static readonly Color WoodColor = new Color(0.55f, 0.35f, 0.2f);
         private static readonly Color SeatColor = new Color(0.25f, 0.2f, 0.18f);
-        private static readonly Vector3[] SeatDirections =
+
+        public static readonly Vector3[] DefaultSeatDirections =
         {
             Vector3.right, Vector3.left, Vector3.forward, Vector3.back
         };
@@ -34,25 +39,50 @@ namespace Startup.Features.BarGame
             root.transform.SetParent(parent, false);
             root.transform.localPosition = position;
 
-            BuildSurface(root.transform);
-
-            var table = root.AddComponent<BarTable>();
-            var seats = BuildSeats(root.transform, out var surfaceOffset);
-            table.SetSeats(seats, surfaceOffset);
-            return table;
-        }
-
-        private static void BuildSurface(Transform parent)
-        {
-            var model = ModelLoader.Instantiate(TableModelPath, parent, "TableModel");
+            var model = ModelLoader.Instantiate(TableModelPath, root.transform, "TableModel");
             if (model != null)
             {
                 ModelLoader.FitToBox(model, new Vector3(TopSize, TopHeight, TopSize));
-                return;
+            }
+            else
+            {
+                BuildTop(root.transform);
+                BuildLegs(root.transform);
             }
 
-            BuildTop(parent);
-            BuildLegs(parent);
+            return root.AddComponent<BarTable>();
+        }
+
+        // A chair whose anchor (at sitting height) stands above 'floorPosition'. The chair model hangs under it,
+        // so moving or turning the anchor moves the whole chair.
+        public static BarChair BuildChair(Transform parent, Vector3 floorPosition, float yaw)
+        {
+            var anchor = new GameObject("Chair").transform;
+            anchor.SetParent(parent, false);
+            anchor.position = floorPosition + Vector3.up * SeatHeight;
+
+            var useModel = false;
+            var model = ModelLoader.Instantiate(ChairModelPath, parent, "ChairModel");
+            if (model != null)
+            {
+                // Fit while unrotated (fitting measures world-aligned bounds), then hang it under the anchor.
+                model.transform.position = floorPosition;
+                ModelLoader.FitToBox(model, new Vector3(SeatSize, ChairHeight, SeatSize));
+                model.transform.SetParent(anchor, true);
+                useModel = true;
+            }
+            else
+            {
+                PrimitiveFactory.Box("SeatBox", anchor, Vector3.zero, new Vector3(SeatSize, SeatThickness, SeatSize), SeatColor);
+            }
+
+            anchor.rotation = Quaternion.Euler(0f, yaw, 0f);
+            AddPickVolume(anchor);
+
+            var chair = anchor.gameObject.AddComponent<BarChair>();
+            // Model anchors sit on the seat surface; the primitive seat is a thin box centered on the anchor.
+            chair.Initialize(useModel ? 0f : SeatThickness * 0.5f);
+            return chair;
         }
 
         private static void BuildTop(Transform parent)
@@ -75,41 +105,14 @@ namespace Startup.Features.BarGame
             }
         }
 
-        private static Transform[] BuildSeats(Transform parent, out float surfaceOffset)
+        // A box the owner can aim at to pick the chair up. Furniture pick volumes live on their own layer.
+        private static void AddPickVolume(Transform anchor)
         {
-            var useModel = Resources.Load<GameObject>(ChairModelPath) != null;
-            // Model anchors sit on the seat surface; primitive anchors are the box center.
-            surfaceOffset = useModel ? 0f : SeatThickness * 0.5f;
-
-            var seats = new Transform[SeatDirections.Length];
-            for (var i = 0; i < seats.Length; i++)
-            {
-                seats[i] = useModel ? BuildChair(parent, i) : BuildPrimitiveSeat(parent, i);
-            }
-
-            return seats;
-        }
-
-        private static Transform BuildPrimitiveSeat(Transform parent, int index)
-        {
-            var position = SeatDirections[index] * SeatOffset + Vector3.up * SeatHeight;
-            var size = new Vector3(SeatSize, SeatThickness, SeatSize);
-            return PrimitiveFactory.Box($"Seat_{index}", parent, position, size, SeatColor).transform;
-        }
-
-        // The anchor marks where a customer sits; the chair model is its child, facing the table.
-        private static Transform BuildChair(Transform parent, int index)
-        {
-            var direction = SeatDirections[index];
-            var anchor = new GameObject($"Seat_{index}").transform;
-            anchor.SetParent(parent, false);
-            anchor.localPosition = direction * SeatOffset + Vector3.up * SeatHeight;
-
-            var chair = ModelLoader.Instantiate(ChairModelPath, parent, $"Chair_{index}");
-            chair.transform.localPosition = direction * SeatOffset;
-            ModelLoader.FitToBox(chair, new Vector3(SeatSize, ChairHeight, SeatSize));
-            chair.transform.rotation = Quaternion.LookRotation(-direction) * Quaternion.Euler(0f, ChairYawOffset, 0f);
-            return anchor;
+            var pick = new GameObject("PickVolume") { layer = BarFurniture.FurnitureLayer };
+            pick.transform.SetParent(anchor, false);
+            var box = pick.AddComponent<BoxCollider>();
+            box.size = new Vector3(SeatSize, ChairHeight, SeatSize);
+            box.center = new Vector3(0f, ChairHeight * 0.5f - SeatHeight, 0f);
         }
     }
 }

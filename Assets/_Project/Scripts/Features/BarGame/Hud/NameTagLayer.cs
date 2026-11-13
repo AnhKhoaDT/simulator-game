@@ -11,6 +11,8 @@ namespace Startup.Features.BarGame
     {
         private const float MaxDistance = 25f;
         private const float MinDepth = 0.2f;
+        // Customers (Ignore Raycast) and furniture pick volumes (TransparentFX) never hide a tag.
+        private const int OccluderMask = ~((1 << 2) | (1 << 1));
 
         private readonly VisualElement _root;
         private readonly List<Tag> _tags = new List<Tag>();
@@ -32,11 +34,28 @@ namespace Startup.Features.BarGame
             return label;
         }
 
+        public void Remove(Label label)
+        {
+            _tags.RemoveAll(tag => tag.Label == label);
+            label.RemoveFromHierarchy();
+        }
+
         public void Tick(Camera cam)
         {
             var panel = _root.panel;
             if (cam == null || panel == null)
             {
+                return;
+            }
+
+            // Every menu freezes the game, and tags must not float over menus.
+            if (Time.timeScale == 0f)
+            {
+                foreach (var tag in _tags)
+                {
+                    tag.Label.style.display = DisplayStyle.None;
+                }
+
                 return;
             }
 
@@ -47,6 +66,12 @@ namespace Startup.Features.BarGame
                 var show = tag.Target.gameObject.activeInHierarchy
                            && (tag.Visible == null || tag.Visible())
                            && depth > MinDepth && depth < MaxDistance;
+
+                // Hide tags behind walls; customers (Ignore Raycast layer) never block them.
+                if (show && Physics.Linecast(cam.transform.position, world, OccluderMask, QueryTriggerInteraction.Ignore))
+                {
+                    show = false;
+                }
 
                 tag.Label.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
                 if (!show)

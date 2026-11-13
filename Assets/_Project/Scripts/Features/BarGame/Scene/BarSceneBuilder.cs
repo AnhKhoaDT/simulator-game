@@ -22,6 +22,7 @@ namespace Startup.Features.BarGame
         private const float RoofOverhang = 0.8f;
         private const float DecorWallInset = 0.8f;
         private const float NameTagHeight = 1.95f;
+        private const float SofaX = 1f;
         private const float DecorRugLift = 0.005f;
         private const float SunPitch = 50f;
         private const float SunYaw = -30f;
@@ -61,14 +62,15 @@ namespace Startup.Features.BarGame
         [Tooltip("Optional. Falls back to Camera.main.")]
         [SerializeField] private Camera _camera;
 
-        private readonly List<BarTable> _tables = new List<BarTable>();
         private readonly BarSeating _seating = new BarSeating();
 
         private BarLayout _layout;
         private Transform _room;
         private BarUpgrades _upgrades;
+        private BarFurniture _furniture;
+        private TrafficCars _traffic;
 
-        public IReadOnlyList<BarTable> Tables => _tables;
+        public IReadOnlyList<BarTable> Tables => _furniture.Tables;
 
         private void Start()
         {
@@ -79,10 +81,11 @@ namespace Startup.Features.BarGame
             var saveStore = new BarSaveStore(new LocalDataStore());
             var economy = new EconomyManager();
             _upgrades = new BarUpgrades(_upgradeSettings);
-            var saved = saveStore.LoadInto(economy, _upgrades);
+            var inventory = new BarInventory();
+            var saved = saveStore.LoadInto(economy, _upgrades, inventory);
 
             var orders = new OrderSystem(_orderSettings, economy.TotalRevenue);
-            orders.Completed += item => economy.Earn(item.Price);
+            orders.Paid += (total, _) => economy.Earn(total);
             economy.Changed += () => orders.RefreshUnlocks(economy.TotalRevenue);
 
             _room = new GameObject("BarRoom").transform;
@@ -99,23 +102,30 @@ namespace Startup.Features.BarGame
             BuildWalls();
             BuildRoof();
             var counter = BuildCounter();
-            SyncTables();
-            _upgrades.Changed += SyncTables;
+            _furniture = new BarFurniture(_layout, _seating, _room, counter.Footprint, CreateTable, SlotPosition);
+            _furniture.Restore(saved.TablePlacements, saved.ChairPlacements, saved.DecorPlacements, saved.LayoutSaved,
+                saved.DecorSaved);
+            var overflow = new List<string>();
+            _furniture.Build(_upgradeSettings.StartTables, DefaultDecor(), overflow);
+            overflow.ForEach(inventory.Add);
             BuildDecor();
 
             var spawner = Child<CustomerSpawner>("CustomerSpawner");
             spawner.Setup(new CustomerContext(_layout, _seating, orders, counter, _customers), clock);
             Child<AmbientPedestrians>("Pedestrians").Setup(_layout, _pedestrians);
-            Child<TrafficCars>("Traffic").Setup(_layout, _cars);
+            _traffic = Child<TrafficCars>("Traffic");
+            _traffic.Setup(_layout, _cars);
             var waiter = Child<WaiterService>("WaiterService");
-            waiter.Setup(spawner, _seating, _upgrades, _upgradeSettings.WaiterWalkSpeed, _layout.WaiterStation);
 
             var profile = new PlayerProfileStore(new LocalDataStore());
             var hud = Child<BarHud>("BarHud");
-            hud.Setup(economy, orders, _upgrades, clock, profile);
+            hud.Setup(economy, orders, _upgrades, clock, profile, inventory);
 
-            BuildOwner(cam, spawner, counter, hud, props, profile);
-            hud.NameTags.Add(waiter.Figure, NameTagHeight, LocalizationService.GetText(LocKeys.StaffWaiterDefault));
+            var cashier = Child<CashierController>("CashierController");
+            cashier.Setup(counter, economy, hud);
+            BuildOwner(cam, spawner, counter, cashier, hud, inventory, props, profile);
+            waiter.Setup(spawner, _seating, _furniture, _upgrades, _upgradeSettings.WaiterWalkSpeed, _layout.WaiterStation,
+                hud.NameTags);
             hud.ShowTutorialOnce();
 
             var lighting = Child<DayLighting>("DayLighting");
@@ -131,12 +141,12 @@ namespace Startup.Features.BarGame
             }
 
             Child<BarAudio>("BarAudio").Setup(orders, _upgrades);
-            Child<BarAutoSave>("BarAutoSave").Setup(economy, _upgrades, clock, saveStore);
+            Child<BarAutoSave>("BarAutoSave").Setup(economy, _upgrades, clock, _furniture, inventory, saveStore);
         }
 
         // The owner starts on the sidewalk looking at the bar's front; the camera sees through their eyes.
-        private void BuildOwner(Camera cam, CustomerSpawner spawner, CashierCounter counter, BarHud hud,
-            List<Rect> props, IPlayerProfile profile)
+        private void BuildOwner(Camera cam, CustomerSpawner spawner, CashierCounter counter, CashierController cashier,
+            BarHud hud, BarInventory inventory, List<Rect> props, IPlayerProfile profile)
         {
             if (cam == null)
             {
@@ -149,6 +159,14 @@ namespace Startup.Features.BarGame
             owner.Setup(_layout, _seating.Obstacles, props, spawner, view, hud.Touch, _ownerSpeed);
             view.Setup(cam, owner.transform, owner.BodyRenderers, hud.Touch, hud.IsOverUi, 0f);
             counter.AddAttendant(owner.transform);
+            _traffic.AddCrosser(owner.transform);
+
+            var decor = Child<DecorController>("DecorController");
+            decor.Setup(_furniture, inventory, cam, owner, () => cashier.IsBusy);
+            decor.PromptChanged += hud.ShowDecorPrompt;
+            decor.StaffPicked += hud.OpenStaff;
+            hud.PlaceRequested += def => decor.BeginPlaceFromStorage(def);
+            hud.IsCarrying = () => decor.IsCarrying;
 
             // Your own tag only shows in third person; in first person you are the camera.
             var tag = hud.NameTags.Add(owner.transform, NameTagHeight, OwnerDisplayName(profile.LoadOwnerName()),
@@ -159,14 +177,6 @@ namespace Startup.Features.BarGame
         private static string OwnerDisplayName(string saved)
         {
             return string.IsNullOrEmpty(saved) ? LocalizationService.GetText(LocKeys.CommonOwnerDefault) : saved;
-        }
-
-        private void OnDestroy()
-        {
-            if (_upgrades != null)
-            {
-                _upgrades.Changed -= SyncTables;
-            }
         }
 
         private T Child<T>(string name) where T : Component
@@ -222,18 +232,6 @@ namespace Startup.Features.BarGame
             return counter;
         }
 
-        // Creates tables up to the number owned; called at start and whenever a table is bought.
-        private void SyncTables()
-        {
-            var target = Mathf.Min(_upgrades.TablesOwned, _tableCount);
-            while (_tables.Count < target)
-            {
-                var table = CreateTable(SlotPosition(_tables.Count));
-                _tables.Add(table);
-                _seating.AddTable(table);
-            }
-        }
-
         // Fixed grid of table slots; _tableCount is the number of slots, not the number owned.
         private Vector3 SlotPosition(int index)
         {
@@ -260,13 +258,22 @@ namespace Startup.Features.BarGame
         // Optional decoration from imported models; silently skipped if a model is missing.
         private void BuildDecor()
         {
-            var cornerX = _layout.HalfX - DecorWallInset;
-            var cornerZ = _layout.HalfZ - DecorWallInset;
-
             PlaceDecor("Models/Furniture/rugRectangle", new Vector3(0f, DecorRugLift, 0f),
                 rugSize: new Vector3(7f, 0.03f, 6f), tint: RugColor);
-            PlaceDecor("Models/Furniture/pottedPlant", new Vector3(cornerX, 0f, cornerZ), height: 1f);
-            PlaceDecor("Models/Furniture/lampRoundFloor", new Vector3(cornerX, 0f, cornerZ - 1.4f), height: 1.6f);
+        }
+
+        // The plant and lamp in the back corner, and a sofa on the back wall for the owner and resting waiters.
+        // They are ordinary furniture: the owner can sit, move or store them.
+        private List<DecorSave> DefaultDecor()
+        {
+            var cornerX = _layout.HalfX - DecorWallInset;
+            var cornerZ = _layout.HalfZ - DecorWallInset;
+            return new List<DecorSave>
+            {
+                new DecorSave { Id = "plant_big", X = cornerX, Z = cornerZ },
+                new DecorSave { Id = "lamp_round", X = cornerX, Z = cornerZ - 1.4f },
+                new DecorSave { Id = "sofa", X = SofaX, Z = _layout.HalfZ - DecorWallInset }
+            };
         }
 
         private void PlaceDecor(string path, Vector3 position, float height = 0f, Vector3? rugSize = null, Color? tint = null)

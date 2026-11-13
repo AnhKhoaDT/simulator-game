@@ -21,15 +21,26 @@ namespace Startup.Features.BarGame
 
         private UIDocument _document;
         private IPlayerProfile _profile;
+        private VisualElement _hintBar;
+        private Label[] _decorLabels;
+        private Action<object[]> _setBlockedReason;
         private TutorialPanel _tutorial;
         private SettingsPanel _settings;
         private Button _settingsButton;
         private EconomyManager _economy;
+        private BarUpgrades _upgrades;
         private OrderSystem _orders;
         private ShiftClock _clock;
         private bool _paused;
         private bool _shopOpen;
+        private bool _inventoryOpen;
         private ShopPanel _shop;
+        private InventoryPanel _inventoryPanel;
+        private PaymentPanel _payment;
+        private Label _cashierPrompt;
+        private StaffPanel _staff;
+        private VisualElement _hintRows;
+        private Button _inventoryButton;
         private Action<object[]> _setMoney;
         private Action<object[]> _setCustomers;
         private Action<object[]> _setTime;
@@ -52,6 +63,29 @@ namespace Startup.Features.BarGame
         // Raised when the owner renames themselves in Settings.
         public event Action<string> OwnerNameChanged;
 
+        // Raised when the owner picks an inventory item to put down.
+        public event Action<FurnitureDef> PlaceRequested;
+
+        // Set by the scene: true while a piece is being carried, when the inventory must stay closed.
+        public Func<bool> IsCarrying { get; set; }
+
+        public void ShowCashierPrompt(bool shown)
+        {
+            SetShown(_cashierPrompt, shown);
+        }
+
+        // Freezes the game while the owner counts out change; 'done' gets the total change given.
+        public void OpenPayment(System.Collections.Generic.IReadOnlyList<MenuItem> items, int bill, int cash,
+            Action<int> done)
+        {
+            Time.timeScale = 0f;
+            _payment.Open(items, bill, cash, given =>
+            {
+                Time.timeScale = 1f;
+                done(given);
+            });
+        }
+
         // Shows "How to play" once, the first time the player enters the bar.
         public void ShowTutorialOnce()
         {
@@ -72,7 +106,7 @@ namespace Startup.Features.BarGame
         }
 
         public void Setup(EconomyManager economy, OrderSystem orders, BarUpgrades upgrades, ShiftClock clock,
-            IPlayerProfile profile)
+            IPlayerProfile profile, BarInventory inventory)
         {
             var root = UiDocuments.Create(gameObject, UxmlPath, out _document);
             if (root == null)
@@ -81,6 +115,7 @@ namespace Startup.Features.BarGame
             }
 
             _economy = economy;
+            _upgrades = upgrades;
             _orders = orders;
             _clock = clock;
             _profile = profile;
@@ -89,13 +124,16 @@ namespace Startup.Features.BarGame
             BindStats(root);
             BindShift(root);
             BindPauseMenu(root);
-            BindShop(root, upgrades);
+            BindShop(root, upgrades, inventory);
+            BindPayment(root);
             BindHint(root);
+            BindDecorPrompt(root);
             BindMenus(root);
             Touch = new TouchControls(root);
 
             _economy.Changed += RefreshStats;
-            _orders.Completed += OnOrderCompleted;
+            LocalizationService.LanguageChanged += RefreshStats;
+            _orders.Paid += OnOrderPaid;
             _orders.ItemUnlocked += OnItemUnlocked;
             _clock.MinuteChanged += RefreshTime;
             _clock.OpenChanged += RefreshShift;
@@ -118,20 +156,40 @@ namespace Startup.Features.BarGame
                 return;
             }
 
+            // Counting change: the panel owns the keyboard until the customer is paid.
+            if (_payment.IsOpen)
+            {
+                _payment.HandleKeys(keyboard);
+                return;
+            }
+
             // While a popup is open, letters belong to it (typing a name) and Esc closes it.
-            if (_tutorial.IsOpen || _settings.IsOpen)
+            var popup = OpenPopup();
+            if (popup != null)
             {
                 if (keyboard.escapeKey.wasPressedThisFrame)
                 {
-                    (_tutorial.IsOpen ? (OverlayPanel)_tutorial : _settings).Close();
+                    popup.Close();
                 }
 
                 return;
             }
 
-            if (keyboard.escapeKey.wasPressedThisFrame && !_shopOpen)
+            if (keyboard.escapeKey.wasPressedThisFrame)
             {
-                SetPaused(!_paused);
+                if (_shopOpen)
+                {
+                    _shop.Close();
+                }
+                else if (_inventoryOpen)
+                {
+                    _inventoryPanel.Close();
+                }
+                else
+                {
+                    SetPaused(!_paused);
+                }
+
                 return;
             }
 
@@ -140,7 +198,7 @@ namespace Startup.Features.BarGame
                 return;
             }
 
-            if (keyboard.bKey.wasPressedThisFrame)
+            if (keyboard.bKey.wasPressedThisFrame && !_inventoryOpen)
             {
                 if (_shopOpen)
                 {
@@ -154,21 +212,171 @@ namespace Startup.Features.BarGame
                 return;
             }
 
-            if (!_shopOpen && keyboard.oKey.wasPressedThisFrame)
+            if (keyboard.iKey.wasPressedThisFrame && !_shopOpen)
+            {
+                if (_inventoryOpen)
+                {
+                    _inventoryPanel.Close();
+                }
+                else
+                {
+                    OnInventoryClicked();
+                }
+
+                return;
+            }
+
+            if (keyboard.hKey.wasPressedThisFrame && _hintRows != null)
+            {
+                ToggleHint();
+            }
+
+            if (!_shopOpen && !_inventoryOpen && keyboard.oKey.wasPressedThisFrame)
             {
                 _clock.SetOpen(!_clock.IsOpen);
             }
         }
 
-        // Show the keyboard hint on PC and the touch hint on phones.
+        private OverlayPanel OpenPopup()
+        {
+            if (_tutorial.IsOpen)
+            {
+                return _tutorial;
+            }
+
+            if (_settings.IsOpen)
+            {
+                return _settings;
+            }
+
+            return _staff.IsOpen ? _staff : null;
+        }
+
+        // The staff card for one waiter; the game freezes while it is open like any other menu.
+        public void OpenStaff(WaiterRecord record)
+        {
+            if (_payment.IsOpen || _shopOpen || _inventoryOpen)
+            {
+                return;
+            }
+
+            Time.timeScale = 0f;
+            _staff.Open(record);
+        }
+
+        // Fixed labels, one shown at a time, so each keeps its own localization key. Order matches DecorPrompt.
+        private void BindDecorPrompt(VisualElement root)
+        {
+            _decorLabels = new[]
+            {
+                root.Q<Label>("decor-pick-table"), root.Q<Label>("decor-pick-chair"), root.Q<Label>("decor-pick-item"),
+                root.Q<Label>("decor-pick-seat"), root.Q<Label>("decor-pick-waiter"), root.Q<Label>("decor-busy"),
+                root.Q<Label>("decor-carry-table"), root.Q<Label>("decor-carry-chair"), root.Q<Label>("decor-carry-item"),
+                root.Q<Label>("decor-blocked"), root.Q<Label>("decor-sitting")
+            };
+            _bindings.Bind(_decorLabels[0], LocKeys.DecorPickTable);
+            _bindings.Bind(_decorLabels[1], LocKeys.DecorPickChair);
+            _bindings.Bind(_decorLabels[2], LocKeys.DecorPickItem);
+            _bindings.Bind(_decorLabels[3], LocKeys.DecorPickSeat);
+            _bindings.Bind(_decorLabels[4], LocKeys.DecorPickWaiter);
+            _bindings.Bind(_decorLabels[5], LocKeys.DecorBusy);
+            _bindings.Bind(_decorLabels[6], LocKeys.DecorCarryTable);
+            _bindings.Bind(_decorLabels[7], LocKeys.DecorCarryChair);
+            _bindings.Bind(_decorLabels[8], LocKeys.DecorCarryItem);
+            _setBlockedReason = _bindings.BindWithArgs(_decorLabels[9], LocKeys.DecorBlocked, new object[] { string.Empty });
+            _bindings.Bind(_decorLabels[10], LocKeys.DecorSitting);
+
+            _cashierPrompt = root.Q<Label>("cashier-give-bill");
+            _bindings.Bind(_cashierPrompt, LocKeys.CashierGiveBill);
+        }
+
+        public void ShowDecorPrompt(DecorPrompt prompt, PlaceCheck reason)
+        {
+            if (_decorLabels == null)
+            {
+                return;
+            }
+
+            if (prompt == DecorPrompt.Blocked)
+            {
+                _setBlockedReason(new object[] { LocalizationService.GetText(ReasonKey(reason)) });
+            }
+
+            for (var i = 0; i < _decorLabels.Length; i++)
+            {
+                SetShown(_decorLabels[i], (int)prompt == i + 1);
+            }
+        }
+
+        private static string ReasonKey(PlaceCheck reason)
+        {
+            switch (reason)
+            {
+                case PlaceCheck.Wall: return LocKeys.DecorReasonWall;
+                case PlaceCheck.Table: return LocKeys.DecorReasonTable;
+                case PlaceCheck.Door: return LocKeys.DecorReasonDoor;
+                case PlaceCheck.Queue: return LocKeys.DecorReasonQueue;
+                case PlaceCheck.Staff: return LocKeys.DecorReasonStaff;
+                case PlaceCheck.Decor: return LocKeys.DecorReasonDecor;
+                case PlaceCheck.Counter: return LocKeys.DecorReasonCounter;
+                case PlaceCheck.Owner: return LocKeys.DecorReasonOwner;
+                case PlaceCheck.Chair: return LocKeys.DecorReasonChair;
+                case PlaceCheck.Item: return LocKeys.DecorReasonItem;
+                default: return LocKeys.DecorReasonUnderTable;
+            }
+        }
+
+        // A small "H  Controls" chip is always on screen; H opens or closes the full list of keys above it, and the
+        // choice is remembered. On phones the chip is replaced by the touch hint.
         private void BindHint(VisualElement root)
         {
-            var pc = root.Q<Label>("hint-pc");
-            var touch = root.Q<Label>("hint-touch");
-            _bindings.Bind(pc, LocKeys.HudHintPc);
-            _bindings.Bind(touch, LocKeys.HudHintTouch);
-            SetShown(pc, !TouchControls.IsTouchPlatform);
-            SetShown(touch, TouchControls.IsTouchPlatform);
+            _hintBar = root.Q<VisualElement>("hint-bar");
+            _hintBar.Clear();
+
+            if (TouchControls.IsTouchPlatform)
+            {
+                var touch = new Label { pickingMode = PickingMode.Ignore };
+                touch.AddToClassList("hint");
+                _bindings.Bind(touch, LocKeys.HudHintTouch);
+                _hintBar.Add(touch);
+                return;
+            }
+
+            _hintRows = new VisualElement { pickingMode = PickingMode.Ignore };
+            _hintRows.AddToClassList("hint-panel");
+            foreach (var row in HintRows.All)
+            {
+                AddHintRow(_hintRows, row.Keys, row.LabelKey);
+            }
+
+            _hintBar.Add(_hintRows);
+
+            var toggle = new VisualElement { pickingMode = PickingMode.Ignore };
+            toggle.AddToClassList("hint-chip");
+            AddHintRow(toggle, "H", LocKeys.HintToggle);
+            _hintBar.Add(toggle);
+            SetShown(_hintRows, !_profile.LoadHintHidden());
+        }
+
+        private void AddHintRow(VisualElement parent, string keys, string labelKey)
+        {
+            var row = new VisualElement { pickingMode = PickingMode.Ignore };
+            row.AddToClassList("hint-row");
+            var cap = new Label(keys) { pickingMode = PickingMode.Ignore };
+            cap.AddToClassList("keycap");
+            var text = new Label { pickingMode = PickingMode.Ignore };
+            text.AddToClassList("hint-text");
+            _bindings.Bind(text, labelKey);
+            row.Add(cap);
+            row.Add(text);
+            parent.Add(row);
+        }
+
+        private void ToggleHint()
+        {
+            var hide = _hintRows.style.display != DisplayStyle.None;
+            SetShown(_hintRows, !hide);
+            _profile.SaveHintHidden(hide);
         }
 
         private void OnDestroy()
@@ -182,7 +390,7 @@ namespace Startup.Features.BarGame
             }
 
             _economy.Changed -= RefreshStats;
-            _orders.Completed -= OnOrderCompleted;
+            _orders.Paid -= OnOrderPaid;
             _orders.ItemUnlocked -= OnItemUnlocked;
             _clock.MinuteChanged -= RefreshTime;
             _clock.OpenChanged -= RefreshShift;
@@ -192,6 +400,11 @@ namespace Startup.Features.BarGame
             _shopButton.clicked -= OnShopClicked;
             _shop.Closed -= OnShopClosed;
             _shop.Dispose();
+            _inventoryButton.clicked -= OnInventoryClicked;
+            _inventoryPanel.Closed -= OnInventoryClosed;
+            _inventoryPanel.PlaceRequested -= OnPlaceRequested;
+            _inventoryPanel.Dispose();
+            _payment.Dispose();
             _pauseButton.clicked -= OnPauseClicked;
             _resumeButton.clicked -= OnResumeClicked;
             _homeButton.clicked -= OnHomeClicked;
@@ -200,6 +413,9 @@ namespace Startup.Features.BarGame
             _settings.OwnerNameChanged -= OnOwnerNameChanged;
             _settings.Closed -= OnMenuClosed;
             _tutorial.Closed -= OnMenuClosed;
+            _staff.Closed -= OnMenuClosed;
+            _staff.Dispose();
+            LocalizationService.LanguageChanged -= RefreshStats;
             _settings.Dispose();
             _tutorial.Dispose();
         }
@@ -212,6 +428,8 @@ namespace Startup.Features.BarGame
             _settings.OwnerNameChanged += OnOwnerNameChanged;
             _tutorial.Closed += OnMenuClosed;
             _settings.Closed += OnMenuClosed;
+            _staff = new StaffPanel(root, _upgrades);
+            _staff.Closed += OnMenuClosed;
 
             _settingsButton = root.Q<Button>("btn-settings");
             _bindings.Bind(_settingsButton, LocKeys.MenuBtnSettings);
@@ -220,6 +438,11 @@ namespace Startup.Features.BarGame
 
         private void OnSettingsClicked()
         {
+            if (_payment.IsOpen)
+            {
+                return;
+            }
+
             OpenMenu(_settings);
         }
 
@@ -232,7 +455,7 @@ namespace Startup.Features.BarGame
         // Back to the pause menu if it is open, otherwise back to the game.
         private void OnMenuClosed()
         {
-            if (!_paused && !_shopOpen && !_settings.IsOpen && !_tutorial.IsOpen)
+            if (!_paused && !_shopOpen && !_inventoryOpen && !_settings.IsOpen && !_tutorial.IsOpen && !_staff.IsOpen)
             {
                 Time.timeScale = 1f;
             }
@@ -250,14 +473,15 @@ namespace Startup.Features.BarGame
 
         private void BindStats(VisualElement root)
         {
-            _setMoney = _bindings.BindWithArgs(root.Q<Label>("money"), LocKeys.HudMoney, new object[] { _economy.Money });
+            _setMoney = _bindings.BindWithArgs(root.Q<Label>("money"), LocKeys.HudMoney,
+                new object[] { Money.Format(_economy.Money) });
             _setCustomers = _bindings.BindWithArgs(root.Q<Label>("customers"), LocKeys.HudCustomers,
                 new object[] { _economy.CustomersServed });
             _setTime = _bindings.BindWithArgs(root.Q<Label>("time"), LocKeys.HudTime, new object[] { _clock.TimeText });
 
             var served = root.Q<Label>("toast");
             _servedToast = new ToastLabel(served,
-                _bindings.BindWithArgs(served, LocKeys.BarServed, new object[] { string.Empty, 0 }));
+                _bindings.BindWithArgs(served, LocKeys.BarServed, new object[] { string.Empty }));
 
             var unlocked = root.Q<Label>("toast-unlock");
             _unlockToast = new ToastLabel(unlocked,
@@ -298,14 +522,51 @@ namespace Startup.Features.BarGame
             _homeButton.clicked += OnHomeClicked;
         }
 
-        private void BindShop(VisualElement root, BarUpgrades upgrades)
+        private void BindShop(VisualElement root, BarUpgrades upgrades, BarInventory inventory)
         {
             _shopButton = root.Q<Button>("btn-shop");
             _bindings.Bind(_shopButton, LocKeys.HudBtnShop);
             _shopButton.clicked += OnShopClicked;
 
-            _shop = new ShopPanel(root, _economy, upgrades);
+            _shop = new ShopPanel(root, _economy, upgrades, inventory);
             _shop.Closed += OnShopClosed;
+
+            _inventoryButton = root.Q<Button>("btn-inventory");
+            _bindings.Bind(_inventoryButton, LocKeys.HudBtnInventory);
+            _inventoryButton.clicked += OnInventoryClicked;
+
+            _inventoryPanel = new InventoryPanel(root, inventory);
+            _inventoryPanel.Closed += OnInventoryClosed;
+            _inventoryPanel.PlaceRequested += OnPlaceRequested;
+        }
+
+        private void BindPayment(VisualElement root)
+        {
+            _payment = new PaymentPanel(root);
+        }
+
+        // Like the shop, the inventory freezes the game. It stays shut while a piece is in the owner's hands.
+        private void OnInventoryClicked()
+        {
+            if (_payment.IsOpen || _paused || _shopOpen || _inventoryOpen || (IsCarrying != null && IsCarrying()))
+            {
+                return;
+            }
+
+            Time.timeScale = 0f;
+            _inventoryOpen = true;
+            _inventoryPanel.Open();
+        }
+
+        private void OnInventoryClosed()
+        {
+            _inventoryOpen = false;
+            Time.timeScale = 1f;
+        }
+
+        private void OnPlaceRequested(FurnitureDef def)
+        {
+            PlaceRequested?.Invoke(def);
         }
 
         private void OnOpenClicked()
@@ -321,6 +582,11 @@ namespace Startup.Features.BarGame
         // The shop freezes the game like the pause menu, so the owner never walks behind it.
         private void OnShopClicked()
         {
+            if (_payment.IsOpen || _inventoryOpen)
+            {
+                return;
+            }
+
             Time.timeScale = 0f;
             _shopOpen = true;
             _shop.Open();
@@ -334,7 +600,7 @@ namespace Startup.Features.BarGame
 
         private void RefreshStats()
         {
-            _setMoney(new object[] { _economy.Money });
+            _setMoney(new object[] { Money.Format(_economy.Money) });
             _setCustomers(new object[] { _economy.CustomersServed });
         }
 
@@ -354,6 +620,11 @@ namespace Startup.Features.BarGame
 
         private void OnPauseClicked()
         {
+            if (_payment.IsOpen)
+            {
+                return;
+            }
+
             SetPaused(true);
         }
 
@@ -375,9 +646,9 @@ namespace Startup.Features.BarGame
             _pauseOverlay.style.display = paused ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
-        private void OnOrderCompleted(MenuItem item)
+        private void OnOrderPaid(int total, System.Collections.Generic.IReadOnlyList<MenuItem> items)
         {
-            _servedToast.Show(new object[] { LocalizationService.GetText(item.NameKey), item.Price }, ToastMilliseconds);
+            _servedToast.Show(new object[] { Money.Format(total) }, ToastMilliseconds);
         }
 
         private void OnItemUnlocked(MenuItem item)

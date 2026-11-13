@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Startup.Features.BarGame
@@ -23,7 +24,8 @@ namespace Startup.Features.BarGame
 
         public event Action Abandoned;
 
-        public event Action<MenuItem> Completed;
+        // Raised once per paid order with the total price and the items on the bill.
+        public event Action<int, IReadOnlyList<MenuItem>> Paid;
 
         public event Action<MenuItem> ItemUnlocked;
 
@@ -48,9 +50,15 @@ namespace Startup.Features.BarGame
             return null;
         }
 
-        public void Complete(MenuItem item)
+        public void CompleteOrder(IReadOnlyList<MenuItem> items)
         {
-            Completed?.Invoke(item);
+            var total = 0;
+            foreach (var item in items)
+            {
+                total += item.Price;
+            }
+
+            Paid?.Invoke(total, items);
         }
 
         // A customer started being served (before they eat and pay).
