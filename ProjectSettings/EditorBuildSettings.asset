@@ -6,7 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/_Project/Scenes/Splash.unity
+    guid: d8778ce8d7976754898fc122b9337155
+  - enabled: 1
+    path: Assets/_Project/Scenes/MainMenu.unity
+    guid: 20b74171f46acd84fa821beafced9c56
+  - enabled: 1
+    path: Assets/_Project/Scenes/BarGame.unity
+    guid: d596929c5dd14414eb57a5ac37d2ffdb
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: fa45872224838505da8fc0b05441a89c, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: 7f4aba341ebea2548928902abf99916d, type: 2}

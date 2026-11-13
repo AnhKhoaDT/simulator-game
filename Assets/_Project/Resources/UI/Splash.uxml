@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/_Project/UI/Splash/Splash.uss" />
+    <ui:VisualElement name="splash-root" class="splash-root">
+        <ui:VisualElement name="splash-content" class="splash-content">
+            <ui:VisualElement name="logo" class="logo" />
+            <ui:Label name="title" class="title" />
+            <ui:Label name="tagline" class="tagline" />
+        </ui:VisualElement>
+        <ui:Label name="footer" class="footer" />
+    </ui:VisualElement>
+</ui:UXML>

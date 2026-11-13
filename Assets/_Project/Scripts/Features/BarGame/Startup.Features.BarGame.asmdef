@@ -4,7 +4,8 @@
     "references": [
         "Startup.Core",
         "Startup.Data",
-        "Startup.Shared"
+        "Startup.Shared",
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

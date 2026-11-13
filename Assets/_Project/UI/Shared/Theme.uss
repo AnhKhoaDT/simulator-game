@@ -1,0 +1,17 @@
+/* Shared theme tokens: change colors/spacing in one place. */
+:root {
+    --color-bg: rgb(15, 20, 25);
+    --color-surface: rgb(26, 32, 41);
+    --color-text: rgb(230, 237, 243);
+    --color-muted: rgb(154, 167, 180);
+    --color-accent: rgb(255, 179, 71);
+    --color-accent-2: rgb(78, 161, 255);
+
+    --space-s: 8px;
+    --space-m: 16px;
+    --space-l: 32px;
+
+    --font-title: 48px;
+    --font-body: 18px;
+    --font-small: 14px;
+}
