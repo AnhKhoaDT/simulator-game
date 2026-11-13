@@ -1,0 +1,731 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: UI_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 441db340ee50707f39fb3a6c8d55d103, type: 2}
+  m_Metadata:
+    m_Items:
+    - rid: 4303785569161314329
+  m_TableData:
+  - m_Id: 489369600
+    m_Localized: Startup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 514535424
+    m_Localized: Business Simulation
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729728
+    m_Localized: Loading...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729729
+    m_Localized: Startup
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729730
+    m_Localized: Choose a venue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729731
+    m_Localized: Pub
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729732
+    m_Localized: Cafe
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729733
+    m_Localized: Drink Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729734
+    m_Localized: Locked
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729735
+    m_Localized: 'Language: English'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729736
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 518729737
+    m_Localized: Quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410033672192
+    m_Localized: 'Shop wallet: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226624
+    m_Localized: 'Customers served: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226625
+    m_Localized: 'Time: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410067226626
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420928
+    m_Localized: Paused
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420929
+    m_Localized: Resume
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420930
+    m_Localized: Main menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420931
+    m_Localized: Paid  +{0}
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 190410071420932
+    m_Localized: Beer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420933
+    m_Localized: Snack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 190410071420934
+    m_Localized: Soda
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247772164096
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912832
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912833
+    m_Localized: Buy a table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912834
+    m_Localized: Hire a waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247809912835
+    m_Localized: (Tables {0}/{1} - Price {2})
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 192247814107136
+    m_Localized: 'Hired: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 192247814107137
+    m_Localized: (Maxed out)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107138
+    m_Localized: Buy
+    m_Metadata:
+      m_Items: []
+  - m_Id: 192247814107139
+    m_Localized: Close
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664474451968
+    m_Localized: Grilled meat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 267664524783616
+    m_Localized: 'New item: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 301432564297728
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269248
+    m_Localized: Closed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269249
+    m_Localized: Open shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 301432585269250
+    m_Localized: Close shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115118837760
+    m_Localized: "WASD: walk  \u2022  Mouse: look  \u2022  E: pick up/place, hand over bill  \u2022  X: store  \u2022  I: storage  \u2022  B: shop  \u2022  O: open/close  \u2022  V: switch view  \u2022  Tab: show cursor  \u2022  Esc: pause  \u2022  H: hide help"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 306115148197888
+    m_Localized: "Drag left side: walk  \u2022  Drag right side: look around"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960795156480
+    m_Localized: Settings
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933696
+    m_Localized: Owner name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933697
+    m_Localized: How to play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933698
+    m_Localized: Owner
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933699
+    m_Localized: Waiter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933700
+    m_Localized: How to play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933701
+    m_Localized: Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933702
+    m_Localized: 'PC: WASD to walk, move the mouse to look around. Click the game to lock the cursor, Tab to free it for buttons. Phone: drag the left half to walk, the right half to look.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933703
+    m_Localized: Opening the bar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933704
+    m_Localized: Press Open shop (O) to start a shift and passers-by will come in. Evenings from 17:00 to 23:00 are busiest, late night is quiet. Close whenever you like; seated guests still finish.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933705
+    m_Localized: Serving guests
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933706
+    m_Localized: 'Seated guests show a bubble with the item they want. Walk up to them to serve it and it appears on the table. The bar under the bubble is their patience: red means they are about to leave.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933707
+    m_Localized: Taking payment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933708
+    m_Localized: After eating, guests queue at the counter. Stand on the circle behind it (it turns green); when the first guest is waiting, press E to hand them the bill. They give cash; tap notes (keys 1-8) to count out the change, then Confirm. Too little change cannot be confirmed, too much comes out of the shop. If nobody comes, they leave without paying.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933709
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933710
+    m_Localized: 'Spend the shop wallet (B) on tables, chairs and every decoration by category, or hire a waiter. What you buy goes into Storage (I): press Place, then walk to where you want it. New menu items unlock as total revenue grows.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933711
+    m_Localized: Camera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 313960811933712
+    m_Localized: V switches between first person and the over-the-shoulder view. H hides or shows the key hint at the bottom of the screen. Esc pauses the game.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963355881472
+    m_Localized: 'E: pick up table'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047296
+    m_Localized: Table is in use
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047297
+    m_Localized: "E: place  \u2022  R: rotate  \u2022  Q: cancel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047298
+    m_Localized: "Can't place: {0}  \u2022  Q: cancel"
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1008963381047299
+    m_Localized: Arranging the bar
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1008963381047300
+    m_Localized: 'Look at a table, chair or decoration and press E to pick it up, walk to the new spot and press E to put it down. R rotates, Q cancels. Press X to store it in Storage and bring it back with I. A table comes with its chairs. Chairs can go anywhere: one close to a table (within 1.6 m) becomes its seat where guests sit; a chair on its own is decoration. The floor marker is green when it fits and red when it does not, with the reason. Orange areas (doorway, pay queue, waiter spot) must stay free. Anything in use by a guest cannot be moved. Positions are saved.'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313137872896
+    m_Localized: "E: pick up table (with chairs)  \u2022  X: store"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038720
+    m_Localized: "E: pick up chair  \u2022  X: store  \u2022  F: sit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038721
+    m_Localized: "E: place  \u2022  R: rotate  \u2022  Q: cancel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313163038722
+    m_Localized: "E: place chair  \u2022  R: rotate  \u2022  Q: cancel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233024
+    m_Localized: too close to the wall
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233025
+    m_Localized: overlaps another table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233026
+    m_Localized: blocks the doorway (orange area)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233027
+    m_Localized: blocks the pay queue (orange area)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233028
+    m_Localized: blocks the waiter's spot (orange area)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233029
+    m_Localized: on top of the plant and lamp (orange area)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233030
+    m_Localized: overlaps the cashier counter
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233031
+    m_Localized: on top of where you stand
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233032
+    m_Localized: chair too far from its table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233033
+    m_Localized: chair too far under the table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1015313167233034
+    m_Localized: touches another chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1021401182711808
+    m_Localized: touches another chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1021401203683328
+    m_Localized: would go under a table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491751194624
+    m_Localized: "Buy \u2022 {0}"
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491780554752
+    m_Localized: 'In storage: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491780554753
+    m_Localized: Storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554754
+    m_Localized: Owner's storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554755
+    m_Localized: Storage is empty. Buy things in the Shop, or store furniture from the bar here (X).
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554756
+    m_Localized: 'Quantity: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491780554757
+    m_Localized: Place
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554758
+    m_Localized: Payment
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491780554759
+    m_Localized: 'Bill: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749056
+    m_Localized: 'Customer gave: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749057
+    m_Localized: 'Change due: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749058
+    m_Localized: 'Change given: {0}'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749059
+    m_Localized: '{0} still missing'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749060
+    m_Localized: '{0} too much: the shop takes the loss'
+    m_Metadata:
+      m_Items:
+      - rid: 4303785569161314329
+  - m_Id: 1031491784749061
+    m_Localized: Clear
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749062
+    m_Localized: Confirm
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749063
+    m_Localized: "Keys 1-8: pick a note  \u2022  Backspace: clear  \u2022  Enter: confirm"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749064
+    m_Localized: 'E: hand the customer the bill'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749065
+    m_Localized: "E: pick up  \u2022  X: store"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749066
+    m_Localized: "E: place  \u2022  R: rotate  \u2022  Q: cancel"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749067
+    m_Localized: touches another item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749068
+    m_Localized: Tables & seats
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749069
+    m_Localized: Plants
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749070
+    m_Localized: Lighting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749071
+    m_Localized: Rugs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749072
+    m_Localized: Storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749073
+    m_Localized: Appliances
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749074
+    m_Localized: Electronics
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749075
+    m_Localized: Staff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749076
+    m_Localized: Wooden table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749077
+    m_Localized: Wooden chair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749078
+    m_Localized: Bench
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749079
+    m_Localized: Sofa
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749080
+    m_Localized: Armchair
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749081
+    m_Localized: Large potted plant
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749082
+    m_Localized: Small plant (1)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749083
+    m_Localized: Small plant (2)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749084
+    m_Localized: Small plant (3)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749085
+    m_Localized: Round floor lamp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749086
+    m_Localized: Square floor lamp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749087
+    m_Localized: Rectangular rug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749088
+    m_Localized: Round rug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749089
+    m_Localized: Square rug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749090
+    m_Localized: Doormat
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749091
+    m_Localized: Open bookcase
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749092
+    m_Localized: Closed bookcase
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749093
+    m_Localized: Side table
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749094
+    m_Localized: TV cabinet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749095
+    m_Localized: Coat rack
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749096
+    m_Localized: Trash can
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749097
+    m_Localized: Fridge
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749098
+    m_Localized: Freezer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749099
+    m_Localized: Display case
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749100
+    m_Localized: Stove
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749101
+    m_Localized: Sink
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749102
+    m_Localized: Kitchen cabinet
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749103
+    m_Localized: Television
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1031491784749104
+    m_Localized: Speaker
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1035702878547968
+    m_Localized: All
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413307981824
+    m_Localized: Controls
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147648
+    m_Localized: "Walk  \u2022  look around"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147649
+    m_Localized: "Pick up, place  \u2022  hand over bill  \u2022  staff"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147650
+    m_Localized: "Sit  \u2022  stand up"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147651
+    m_Localized: Store in storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147652
+    m_Localized: "Rotate  \u2022  cancel while carrying"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147653
+    m_Localized: Storage
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147654
+    m_Localized: Shop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147655
+    m_Localized: "Open  \u2022  close the bar"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147656
+    m_Localized: Switch view
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147657
+    m_Localized: Show cursor
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147658
+    m_Localized: Pause
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147659
+    m_Localized: "E: pick up  \u2022  X: store  \u2022  F: sit"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147660
+    m_Localized: 'E: manage this waiter'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147661
+    m_Localized: 'F or WASD: stand up'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147662
+    m_Localized: Staff
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147663
+    m_Localized: Name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147664
+    m_Localized: Working
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147665
+    m_Localized: Resting
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147666
+    m_Localized: Send to rest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147667
+    m_Localized: Back to work
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147668
+    m_Localized: Dismiss
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147669
+    m_Localized: A free bench or sofa is needed to rest.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147670
+    m_Localized: RECEIPT
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147671
+    m_Localized: Total
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147672
+    m_Localized: Customer paid
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2078413333147673
+    m_Localized: Change
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds:
+    - rid: 4303785569161314329
+      type: {class: SmartFormatTag, ns: UnityEngine.Localization.Metadata, asm: Unity.Localization}
+      data:
+        m_Entries: 
+        m_SharedEntries:
+        - id: 190410033672192
+        - id: 190410067226624
+        - id: 190410067226625
+        - id: 190410071420931
+        - id: 192247809912835
+        - id: 192247814107136
+        - id: 267664524783616
+        - id: 1008963381047298
+        - id: 1031491751194624
+        - id: 1031491780554752
+        - id: 1031491780554756
+        - id: 1031491780554759
+        - id: 1031491784749056
+        - id: 1031491784749057
+        - id: 1031491784749058
+        - id: 1031491784749059
+        - id: 1031491784749060

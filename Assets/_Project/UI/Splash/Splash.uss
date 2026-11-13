@@ -1,0 +1,42 @@
+/* Splash layout & style. Fills the screen, centers logo + title. */
+@import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+
+.splash-root {
+    flex-grow: 1;
+    background-color: var(--color-bg);
+    align-items: center;
+    justify-content: center;
+}
+
+.splash-content {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 128px;
+    height: 128px;
+    border-radius: 24px;
+    background-color: var(--color-accent);
+    margin-bottom: var(--space-l);
+}
+
+.title {
+    font-size: var(--font-title);
+    color: var(--color-text);
+    -unity-font-style: bold;
+    margin-bottom: var(--space-s);
+}
+
+.tagline {
+    font-size: var(--font-body);
+    color: var(--color-muted);
+}
+
+.footer {
+    position: absolute;
+    bottom: 24px;
+    font-size: var(--font-small);
+    color: var(--color-muted);
+}

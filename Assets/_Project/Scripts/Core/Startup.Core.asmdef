@@ -2,7 +2,9 @@
     "name": "Startup.Core",
     "rootNamespace": "Startup.Core",
     "references": [
-        "Startup.Shared"
+        "Startup.Shared",
+        "Unity.Localization",
+        "Unity.ResourceManager"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

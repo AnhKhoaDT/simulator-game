@@ -1,0 +1,658 @@
+/* In-game HUD: stats top-left, pause button top-right, pause overlay on top. */
+@import url("project://database/Assets/_Project/UI/Shared/Theme.uss");
+@import url("project://database/Assets/_Project/UI/Shared/Panels.uss");
+
+.name-tag {
+    position: absolute;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.55);
+    padding: 2px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.hud-root {
+    flex-grow: 1;
+    padding: var(--space-m);
+}
+
+.top-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.stats {
+    align-items: flex-start;
+}
+
+
+.hud-stat--money {
+    color: var(--color-accent);
+    -unity-font-style: bold;
+}
+
+.hud-toast {
+    font-size: var(--font-small);
+    color: var(--color-text);
+    background-color: var(--color-surface);
+    padding: var(--space-s) var(--space-m);
+    border-radius: 8px;
+}
+
+.hud-toast--unlock {
+    color: var(--color-accent);
+    -unity-font-style: bold;
+    margin-top: var(--space-s);
+}
+
+.hud-status--open {
+    color: rgb(110, 220, 130);
+    -unity-font-style: bold;
+}
+
+.hud-status--closed {
+    color: rgb(240, 120, 110);
+    -unity-font-style: bold;
+}
+
+/* Two classes, so these win over the plain .hud-btn rules below. */
+.hud-btn.hud-btn--open {
+    background-color: rgb(46, 125, 70);
+    -unity-font-style: bold;
+}
+
+.hud-btn.hud-btn--close {
+    background-color: rgb(140, 50, 45);
+}
+
+.crosshair {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    margin-top: -3px;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.decor-prompt {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 54%;
+    align-items: center;
+}
+
+.decor-chip {
+    display: none;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.55);
+    padding: 4px 12px;
+    border-radius: 8px;
+}
+
+.decor-chip--warn {
+    color: rgb(255, 170, 150);
+}
+
+.decor-chip--cashier {
+    color: rgb(150, 235, 170);
+}
+
+
+
+.joystick-base {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 70px;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.joystick-knob {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    background-color: rgba(255, 255, 255, 0.55);
+}
+
+.hud-btn {
+    min-width: 132px;
+    height: 40px;
+    font-size: var(--font-body);
+    -unity-text-align: middle-center;
+    color: var(--color-text);
+    background-color: rgba(26, 32, 41, 0.92);
+    border-width: 0;
+    padding: 0 var(--space-m);
+    border-radius: 10px;
+    margin: 0 0 var(--space-s) 0;
+}
+
+.hud-btn:hover {
+    background-color: rgb(40, 50, 64);
+}
+
+.hud-btn:active {
+    background-color: rgb(20, 26, 34);
+}
+
+.hud-btn.hud-btn--open:hover {
+    background-color: rgb(60, 150, 88);
+}
+
+.hud-btn.hud-btn--close:hover {
+    background-color: rgb(165, 64, 58);
+}
+
+.pause-overlay {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+}
+
+
+.actions {
+    align-items: flex-end;
+}
+
+/* Full-screen shop and storage: tabs | picture grid | detail pane. */
+.screen-overlay {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(15, 20, 25);
+    padding: var(--space-m);
+}
+
+.screen-top {
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: var(--space-m);
+}
+
+.screen-title {
+    flex-grow: 1;
+    font-size: 28px;
+    color: var(--color-text);
+    -unity-font-style: bold;
+}
+
+.screen-wallet {
+    font-size: var(--font-body);
+    color: var(--color-accent);
+    -unity-font-style: bold;
+    background-color: var(--color-surface);
+    border-radius: 8px;
+    padding: 6px 14px;
+    margin-right: var(--space-m);
+}
+
+.screen-body {
+    flex-direction: row;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.screen-tabs {
+    width: 150px;
+    margin-right: var(--space-m);
+}
+
+.screen-tab {
+    font-size: var(--font-body);
+    color: var(--color-muted);
+    background-color: var(--color-surface);
+    border-width: 0;
+    border-radius: 10px;
+    height: 44px;
+    margin: 0 0 6px 0;
+    -unity-text-align: middle-left;
+    padding-left: 14px;
+}
+
+.screen-tab:hover {
+    background-color: rgb(40, 50, 64);
+}
+
+.screen-tab--active {
+    color: rgb(20, 24, 30);
+    background-color: var(--color-accent);
+    -unity-font-style: bold;
+}
+
+.screen-tab--active:hover {
+    background-color: var(--color-accent);
+}
+
+.screen-center {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+.screen-grid {
+    flex-grow: 1;
+}
+
+.screen-grid .unity-scroll-view__content-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.screen-empty {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 40%;
+    font-size: var(--font-body);
+    color: var(--color-muted);
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.item-card {
+    width: 128px;
+    height: 164px;
+    margin: 0 10px 10px 0;
+    padding: 6px;
+    align-items: center;
+    background-color: var(--color-surface);
+    border-radius: 12px;
+    border-width: 3px;
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.item-card:hover {
+    background-color: rgb(40, 50, 64);
+}
+
+.item-card--selected {
+    border-color: var(--color-accent);
+}
+
+.item-icon {
+    width: 104px;
+    height: 104px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background-color: rgb(51, 61, 77);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.item-name {
+    font-size: var(--font-small);
+    color: var(--color-text);
+    -unity-text-align: upper-center;
+    white-space: normal;
+    height: 36px;
+    margin-top: 4px;
+    overflow: hidden;
+}
+
+.item-badge {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    font-size: var(--font-small);
+    color: var(--color-accent);
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    padding: 1px 8px;
+}
+
+.screen-detail {
+    width: 250px;
+    margin-left: var(--space-m);
+    padding: var(--space-m);
+    align-items: center;
+    background-color: var(--color-surface);
+    border-radius: 14px;
+}
+
+.detail-icon {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background-color: rgb(51, 61, 77);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.detail-name {
+    font-size: 22px;
+    color: var(--color-text);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-top: var(--space-m);
+}
+
+.detail-info {
+    font-size: var(--font-body);
+    color: var(--color-muted);
+    -unity-text-align: middle-center;
+    white-space: normal;
+    margin-top: var(--space-s);
+}
+
+.detail-action {
+    width: 100%;
+    height: 48px;
+    margin-top: var(--space-m);
+    background-color: rgb(46, 125, 70);
+    -unity-font-style: bold;
+}
+
+.detail-action:hover {
+    background-color: rgb(60, 150, 88);
+}
+
+.detail-action:disabled {
+    background-color: rgb(60, 66, 74);
+}
+
+
+
+
+
+
+
+
+
+.shop-row {
+    margin-bottom: var(--space-m);
+    align-items: stretch;
+}
+
+.shop-heading {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: var(--space-s);
+}
+
+.shop-name {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    -unity-font-style: bold;
+}
+
+.shop-info {
+    font-size: var(--font-small);
+    color: var(--color-muted);
+    margin-left: var(--space-s);
+}
+
+.pause-title {
+    font-size: var(--font-title);
+    color: var(--color-text);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-m);
+}
+
+/* Stats chips: dark pills with a thin accent edge. */
+.hud-stat {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    background-color: rgba(20, 26, 34, 0.88);
+    border-left-width: 3px;
+    border-left-color: rgba(255, 179, 71, 0.55);
+    padding: 6px 14px;
+    border-radius: 10px;
+    margin-bottom: var(--space-s);
+}
+
+/* Popups share one card look with the shared panels. */
+.pause-panel {
+    width: 40%;
+    max-width: 360px;
+    padding: var(--space-l);
+    background-color: var(--color-bg);
+    border-radius: 18px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    align-items: stretch;
+}
+
+/* Key guide: a small chip is always shown; H opens the list of keys above it. */
+.hint-bar {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    align-items: flex-start;
+}
+
+.hint {
+    font-size: var(--font-small);
+    color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(0, 0, 0, 0.45);
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+.hint-panel {
+    background-color: rgba(12, 16, 22, 0.82);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+}
+
+.hint-chip {
+    background-color: rgba(12, 16, 22, 0.82);
+    border-radius: 10px;
+    padding: 4px 10px;
+}
+
+.hint-row {
+    flex-direction: row;
+    align-items: center;
+    margin: 3px 0;
+}
+
+.keycap {
+    min-width: 34px;
+    font-size: var(--font-small);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(30, 22, 10);
+    background-color: rgb(235, 228, 212);
+    border-radius: 6px;
+    border-bottom-width: 3px;
+    border-bottom-color: rgb(160, 150, 130);
+    padding: 1px 8px;
+    margin-right: 10px;
+}
+
+.hint-text {
+    font-size: var(--font-small);
+    color: var(--color-text);
+}
+
+/* Checkout: paper receipt beside the till. */
+.pay-card {
+    flex-direction: row;
+    width: 86%;
+    max-width: 860px;
+    background-color: var(--color-bg);
+    border-radius: 18px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.08);
+    padding: var(--space-m);
+}
+
+.pay-receipt {
+    width: 44%;
+    padding: var(--space-m);
+    margin-right: var(--space-m);
+    background-color: rgb(250, 246, 234);
+    border-radius: 8px;
+}
+
+.receipt-title {
+    font-size: 26px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    color: rgb(40, 34, 28);
+    margin-bottom: 6px;
+}
+
+.receipt-rule {
+    height: 0;
+    border-top-width: 2px;
+    border-top-color: rgba(60, 50, 40, 0.45);
+    margin: 8px 0;
+}
+
+.receipt-lines {
+    min-height: 60px;
+}
+
+.receipt-line {
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 2px 0;
+}
+
+.receipt-name {
+    flex-shrink: 1;
+    font-size: var(--font-body);
+    color: rgb(50, 44, 38);
+}
+
+.receipt-amount {
+    font-size: var(--font-body);
+    color: rgb(50, 44, 38);
+    -unity-text-align: middle-right;
+    margin-left: 12px;
+}
+
+.receipt-strong {
+    -unity-font-style: bold;
+    font-size: 20px;
+}
+
+.pay-register {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: var(--space-s);
+}
+
+.pay-register-title {
+    font-size: var(--font-body);
+    color: var(--color-muted);
+    margin-bottom: 2px;
+}
+
+.pay-due {
+    font-size: 32px;
+    -unity-font-style: bold;
+    color: var(--color-accent);
+    margin-bottom: 6px;
+}
+
+.pay-line {
+    font-size: var(--font-body);
+    color: var(--color-text);
+    margin-bottom: 4px;
+}
+
+.pay-warn {
+    display: none;
+    font-size: var(--font-small);
+    color: rgb(255, 170, 150);
+    margin-bottom: 4px;
+}
+
+.pay-notes {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: var(--space-s) 0;
+}
+
+.pay-note {
+    width: 30%;
+    height: 54px;
+    margin: 3px 1.5%;
+    border-width: 0;
+    border-radius: 8px;
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(255, 255, 255);
+    -unity-text-align: middle-center;
+}
+
+.pay-note:hover {
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
+}
+
+.note-key {
+    position: absolute;
+    left: 6px;
+    top: 3px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.pay-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.pay-confirm {
+    min-width: 150px;
+    margin-left: var(--space-s);
+}
+
+.pay-hint {
+    font-size: 12px;
+    color: var(--color-muted);
+    margin-top: var(--space-s);
+    white-space: normal;
+}
+
+/* Waiter card. */
+.staff-status {
+    font-size: var(--font-body);
+    -unity-font-style: bold;
+    margin-bottom: var(--space-s);
+}
+
+.staff-status--working {
+    color: rgb(110, 220, 130);
+}
+
+.staff-status--resting {
+    color: var(--color-accent);
+}
+
+.staff-hint {
+    font-size: var(--font-small);
+    color: var(--color-muted);
+    white-space: normal;
+    margin-bottom: var(--space-s);
+}
